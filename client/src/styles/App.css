@@ -1,8 +1,12 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --bg-colour: rgb(34, 40, 49);
+  --bg-colour2: rgb(49, 54, 63);
+  --fg-colour: rgb(118, 171, 174);
+  --fg-colour2: rgb(238, 238, 238);
+  --border-radius: 10px;
+  --shadow-color: 0, 0, 0, 0.7;
 }
 
-
+body {
+  background-color: var(--bg-colour);
+}
