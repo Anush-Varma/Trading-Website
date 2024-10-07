@@ -13,8 +13,6 @@ app.get("/", (req, res) => {
   res.send("Working");
 });
 
-// This is where you define routes for the application GET, POST ...
-
 app.listen(port, () => {
   console.log("Server has started on port 8080");
 });
