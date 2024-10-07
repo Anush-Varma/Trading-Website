@@ -13,7 +13,9 @@ function Nav() {
         <Button text="Login"></Button>
         <Button text="Sign Up"></Button>
       </div>
-      {/*  */}
+      {/* Have card like components where the cards can expand and 
+      shrink depending on if gylph is clicked and expand with larger graphs
+        */}
     </div>
   );
 }
