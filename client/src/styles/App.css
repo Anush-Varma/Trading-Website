@@ -5,7 +5,7 @@
   --component-colour2: rgb(119, 141, 169);
   --component-colour3: rgb(224, 225, 221);
   --border-radius: 10px;
-  --shadow-color: rgb(13, 27, 42);
+  --shadow-colour: rgb(13, 27, 42);
 }
 
 body {
