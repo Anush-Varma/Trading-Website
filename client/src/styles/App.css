@@ -1,10 +1,11 @@
 :root {
-  --bg-colour: rgb(34, 40, 49);
-  --bg-colour2: rgb(49, 54, 63);
-  --fg-colour: rgb(118, 171, 174);
-  --fg-colour2: rgb(238, 238, 238);
+  --bg-colour: rgb(27, 38, 59);
+  --bg-colour2: rgb(13, 27, 42);
+  --component-colour: rgb(65, 90, 119);
+  --component-colour2: rgb(119, 141, 169);
+  --component-colour3: rgb(224, 225, 221);
   --border-radius: 10px;
-  --shadow-color: 0, 0, 0, 0.7;
+  --shadow-color: rgb(13, 27, 42);
 }
 
 body {
