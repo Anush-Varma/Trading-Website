@@ -1,5 +1,5 @@
 import Button from "./Button";
-import SearchBar from "./SearchBar";
+
 import "../styles/nav.css";
 
 function Nav() {
@@ -9,7 +9,7 @@ function Nav() {
         <Button text="StockSage"></Button>
         <Button text="Watch List"></Button>
       </div>
-      <SearchBar></SearchBar>
+
       <div className="right">
         <Button text="Tutorial"></Button>
         <Button text="Sign Up"></Button>
