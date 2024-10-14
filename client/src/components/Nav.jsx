@@ -10,7 +10,7 @@ function Nav() {
         <Button text="StockSage"></Button>
         <Button text="Watch List"></Button>
       </div>
-      <div>
+      <div className="center-section">
         <SearchBar></SearchBar>
       </div>
       <div className="right">
