@@ -1,5 +1,5 @@
 import Nav from "./components/Nav";
-
+import Card from "./components/Card";
 // TO DO: HJome page should kinda be siilar to Vijay page
 // Make it more visually pleasing.
 
@@ -9,8 +9,14 @@ import Nav from "./components/Nav";
 
 function HomePage() {
   return (
-    <div>
+    <div className="home-page">
       <Nav></Nav>
+      <div className="cards">
+        <Card></Card>
+        <Card></Card>
+        <Card></Card>
+        <Card></Card>
+      </div>
     </div>
   );
 }

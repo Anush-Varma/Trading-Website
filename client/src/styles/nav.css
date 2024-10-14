@@ -4,8 +4,10 @@
   align-items: center;
 }
 
-.nav-bar:right {
+.nav:left,
+nav:right {
   display: flex;
+  gap: 15px;
 }
 
 .center-section {

@@ -1,0 +1,9 @@
+.home-page {
+}
+
+.cards {
+  display: grid;
+  columns: 4;
+  column-gap: 10px;
+  row-gap: 10px;
+}
