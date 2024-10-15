@@ -1,9 +1,10 @@
-.home-page {
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cards {
   display: grid;
-  columns: 4;
-  column-gap: 10px;
-  row-gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
 }

@@ -1,18 +1,17 @@
-.card-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 20px;
-}
-
 .card {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
   background-color: var(--component-colour);
   border-radius: 20px;
-  width: 200px;
-  height: 100px;
+  width: 340px;
+  height: 150px;
   box-shadow: 0 5px 8px var(--shadow-colour);
+  opacity: 0.9;
 }
 
 .card:hover {
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+  opacity: 1;
 }
