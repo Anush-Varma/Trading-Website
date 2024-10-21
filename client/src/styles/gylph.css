@@ -2,15 +2,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 130px;
-  height: 130px;
+  width: 200px;
+  height: 200px;
   position: relative;
 }
 
 .circle {
-  width: 110px;
-  height: 110px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  background-color: black;
+  background-color: var(--component-colour2);
   position: absolute;
 }

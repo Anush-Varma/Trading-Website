@@ -9,21 +9,16 @@ import "./styles/homePage.css";
 // gylph to enlarge
 
 function HomePage() {
+  const cardCount = Array.from({ length: 32 });
+
   return (
     <div className="home-page">
       <Nav></Nav>
       <div className="cards-wrapper">
         <div className="cards">
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
-          <Card></Card>
+          {cardCount.map((_, index) => (
+            <Card></Card>
+          ))}
         </div>
       </div>
     </div>
