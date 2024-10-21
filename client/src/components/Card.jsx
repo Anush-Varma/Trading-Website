@@ -1,7 +1,12 @@
 import "../styles/card.css";
+import Gylph from "./Gylph";
 
-const Card = () => {
-  return <div className="card"></div>;
-};
+function Card() {
+  return (
+    <div className="card">
+      <Gylph></Gylph>
+    </div>
+  );
+}
 
 export default Card;
