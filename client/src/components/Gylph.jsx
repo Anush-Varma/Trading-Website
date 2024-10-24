@@ -3,17 +3,15 @@ import React from "react";
 import "../styles/gylph.css";
 
 function Gylph() {
-  const radius = 150;
+  const radius = 75;
+  const buttonWidth = 30;
+  const angleOfButton = -30; // in Degrees
   const buttons = ["A", "B", "C"];
-  const center = 200; // change
 
-  const getButtonPosition = (index, totalButtons) => {
-    const angle = (index / totalButtons) * (2 * Math.PI);
-    const x = center + radius * Math.cos(angle);
-    const y = center + radius * Math.sin(angle);
+  const angleInRad = (angleOfButton * Math.PI) / 180;
 
-    return { x, y };
-  };
+  const buttonXPosition = radius * Math.cos(angleInRad);
+  const buttonYPostision = radius * Math.sin(angleInRad);
 
   return (
     <div className="circle-container">
