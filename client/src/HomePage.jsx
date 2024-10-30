@@ -9,7 +9,7 @@ import "./styles/homePage.css";
 // gylph to enlarge
 
 function HomePage() {
-  const cardCount = Array.from({ length: 32 });
+  const cardCount = Array.from({ length: 5 });
 
   return (
     <div className="home-page">

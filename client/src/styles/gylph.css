@@ -6,11 +6,3 @@
   height: 200px;
   position: relative;
 }
-
-.circle {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background-color: var(--component-colour2);
-  position: absolute;
-}
