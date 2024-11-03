@@ -6,35 +6,59 @@ function Gylph() {
   const svgRef = useRef();
 
   useEffect(() => {
-    const width = 150;
-    const height = 150;
-    const circleRadius = 75;
+    d3.select(svgRef.current).selectAll("*").remove();
+
+    const width = 200;
+    const height = 200;
+    const circleRadius = 80;
     const buttonCount = 4;
-    const arcInnerButtonRadius = circleRadius + 10;
-    const arcOuterButtonRadius = arcInnerButtonRadius + 30;
+    const buttonWidth = 20;
+    const buttonHeight = 40;
+    const buttonDistance = circleRadius + 10;
 
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
+      .append("g");
+
+    // create a mainGroup layer and stack ontop each element
+    const mainGroup = svg
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    svg
+    // add circle to layer
+    mainGroup
       .append("circle")
       .attr("r", circleRadius)
       .attr("fill", "rgb(119, 141, 169)");
 
-    const arc = d3
+    const startAngle = (2 * Math.Pi) / 3;
+    const endAngle = (5 * Math.Pi) / 6;
+    // add arced buttons
+    const arcButton = d3
       .arc()
-      .innerRadius(arcInnerButtonRadius)
-      .outerRadius(arcOuterButtonRadius)
-      .cornerRadius(5);
+      .innerRadius(circleRadius)
+      .outerRadius(circleRadius + 25)
+      .cornerRadius(5)
+      .startAngle(5.2)
+      .endAngle(5.8);
+
+    mainGroup
+      .append("path")
+      .attr("d", arcButton)
+      .attr("fill", "black")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        alert("button clicked");
+      });
   });
 
   return (
     <div className="circle-container">
-      <svg ref={svgRef}></svg>
+      <svg ref={svgRef} className="w-full h-full"></svg>
     </div>
   );
 }
