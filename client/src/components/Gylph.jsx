@@ -4,17 +4,27 @@ import "../styles/gylph.css";
 
 function Gylph() {
   const svgRef = useRef();
+  const circleRadius = 100;
+  const buttonFillColour = "rgb(13, 27, 42)";
+  const buttonStrokeColour = "rgb(119, 141, 169)";
+
+  function generateButton(cornerRadius, startAngle, endAngle) {
+    const arcButton = d3
+      .arc()
+      .innerRadius(circleRadius)
+      .outerRadius(circleRadius + 30)
+      .cornerRadius(cornerRadius)
+      .startAngle(startAngle)
+      .endAngle(endAngle);
+
+    return arcButton;
+  }
 
   useEffect(() => {
     d3.select(svgRef.current).selectAll("*").remove();
 
-    const width = 200;
-    const height = 200;
-    const circleRadius = 80;
-    const buttonCount = 4;
-    const buttonWidth = 20;
-    const buttonHeight = 40;
-    const buttonDistance = circleRadius + 10;
+    const width = 275;
+    const height = 275;
 
     const svg = d3
       .select(svgRef.current)
@@ -33,22 +43,44 @@ function Gylph() {
       .attr("r", circleRadius)
       .attr("fill", "rgb(119, 141, 169)");
 
-    const startAngle = (2 * Math.Pi) / 3;
-    const endAngle = (5 * Math.Pi) / 6;
-    // add arced buttons
-    const arcButton = d3
-      .arc()
-      .innerRadius(circleRadius)
-      .outerRadius(circleRadius + 25)
-      .cornerRadius(5)
-      .startAngle(5.2)
-      .endAngle(5.8);
+    mainGroup
+      .append("path")
+      .attr("d", generateButton(5, 5.8, 5.4))
+      .attr("fill", buttonFillColour)
+      .attr("stroke", buttonStrokeColour)
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        alert("button clicked");
+      });
 
     mainGroup
       .append("path")
-      .attr("d", arcButton)
-      .attr("fill", "black")
-      .attr("stroke", "white")
+      .attr("d", generateButton(5, 5.3, 4.9))
+      .attr("fill", buttonFillColour)
+      .attr("stroke", buttonStrokeColour)
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        alert("button clicked");
+      });
+
+    mainGroup
+      .append("path")
+      .attr("d", generateButton(5, 4, 4.4))
+      .attr("fill", buttonFillColour)
+      .attr("stroke", buttonStrokeColour)
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        alert("button clicked");
+      });
+
+    mainGroup
+      .append("path")
+      .attr("d", generateButton(5, 3.5, 3.9))
+      .attr("fill", buttonFillColour)
+      .attr("stroke", buttonStrokeColour)
       .attr("stroke-width", 1)
       .style("cursor", "pointer")
       .on("click", () => {
