@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
 
@@ -7,12 +7,27 @@ function Gylph() {
   const circleRadius = 100;
   const buttonFillColour = "rgb(13, 27, 42)";
   const buttonStrokeColour = "rgb(119, 141, 169)";
+  const initialRadius = 30;
+  const clickedRadius = 35;
 
-  function generateButton(cornerRadius, startAngle, endAngle) {
+  const [outerRadii, setOuterRadii] = useState([
+    initialRadius,
+    initialRadius,
+    initialRadius,
+    initialRadius,
+  ]);
+
+  const handleArcClick = (index) => {
+    setOuterRadii((prevRadii) =>
+      prevRadii.map((_, i) => (i === index ? clickedRadius : initialRadius))
+    );
+  };
+
+  function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
     const arcButton = d3
       .arc()
       .innerRadius(circleRadius)
-      .outerRadius(circleRadius + 30)
+      .outerRadius(circleRadius + outerRadius)
       .cornerRadius(cornerRadius)
       .startAngle(startAngle)
       .endAngle(endAngle);
@@ -37,55 +52,36 @@ function Gylph() {
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    // add circle to layer
     mainGroup
       .append("circle")
       .attr("r", circleRadius)
       .attr("fill", "rgb(119, 141, 169)");
 
-    mainGroup
-      .append("path")
-      .attr("d", generateButton(5, 5.8, 5.4))
-      .attr("fill", buttonFillColour)
-      .attr("stroke", buttonStrokeColour)
-      .attr("stroke-width", 1)
-      .style("cursor", "pointer")
-      .on("click", () => {
-        alert("button clicked");
-      });
+    const arcsData = [
+      { startAngle: 5.8, endAngle: 5.4 },
+      { startAngle: 5.3, endAngle: 4.9 },
+      { startAngle: 4, endAngle: 4.4 },
+      { startAngle: 3.5, endAngle: 3.9 },
+    ];
 
-    mainGroup
-      .append("path")
-      .attr("d", generateButton(5, 5.3, 4.9))
-      .attr("fill", buttonFillColour)
-      .attr("stroke", buttonStrokeColour)
-      .attr("stroke-width", 1)
-      .style("cursor", "pointer")
-      .on("click", () => {
-        alert("button clicked");
-      });
-
-    mainGroup
-      .append("path")
-      .attr("d", generateButton(5, 4, 4.4))
-      .attr("fill", buttonFillColour)
-      .attr("stroke", buttonStrokeColour)
-      .attr("stroke-width", 1)
-      .style("cursor", "pointer")
-      .on("click", () => {
-        alert("button clicked");
-      });
-
-    mainGroup
-      .append("path")
-      .attr("d", generateButton(5, 3.5, 3.9))
-      .attr("fill", buttonFillColour)
-      .attr("stroke", buttonStrokeColour)
-      .attr("stroke-width", 1)
-      .style("cursor", "pointer")
-      .on("click", () => {
-        alert("button clicked");
-      });
+    arcsData.forEach((arcsData, index) => {
+      mainGroup
+        .append("path")
+        .attr(
+          "d",
+          generateButton(
+            5,
+            arcsData.startAngle,
+            arcsData.endAngle,
+            outerRadii[index]
+          )
+        )
+        .attr("fill", buttonFillColour)
+        .attr("stroke", buttonStrokeColour)
+        .attr("stroke-width", 1)
+        .style("cursor", "pointer")
+        .on("click", () => handleArcClick(index));
+    });
   });
 
   return (
