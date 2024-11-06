@@ -17,7 +17,7 @@ function HomePage() {
       <div className="cards-wrapper">
         <div className="cards">
           {cardCount.map((_, index) => (
-            <Card></Card>
+            <Card key={index} index={index}></Card>
           ))}
         </div>
       </div>

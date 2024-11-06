@@ -1,11 +1,11 @@
 import "../styles/card.css";
 import Gylph from "./Gylph";
 
-function Card() {
+function Card(props) {
   return (
     <div className="card">
       <h1 className="stock-symbol">Stock Name</h1>
-      <Gylph></Gylph>
+      <Gylph id={props.index}></Gylph>
     </div>
   );
 }

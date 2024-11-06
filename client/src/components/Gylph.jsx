@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
 
-function Gylph() {
+function Gylph({ id }) {
   const svgRef = useRef();
   const circleRadius = 100;
   const buttonFillColour = "rgb(13, 27, 42)";
@@ -17,11 +17,11 @@ function Gylph() {
     initialRadius,
   ]);
 
-  const handleArcClick = (index) => {
+  const handleArcClick = useCallback((index) => {
     setOuterRadii((prevRadii) =>
       prevRadii.map((_, i) => (i === index ? clickedRadius : initialRadius))
     );
-  };
+  }, []);
 
   function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
     const arcButton = d3
@@ -76,6 +76,7 @@ function Gylph() {
         .append("path")
         .attr("d", arc)
         .attr("fill", buttonFillColour)
+
         .attr("stroke", buttonStrokeColour)
         .attr("stroke-width", 1)
         .style("cursor", "pointer")
@@ -91,7 +92,7 @@ function Gylph() {
       mainGroup
         .append("path")
         .attr("d", textArc)
-        .attr("id", `arcPath-${index}`)
+        .attr("id", `arcTextPath-${index}-${id}`)
         .attr("fill", "none")
         .attr("stroke", "none");
 
@@ -100,7 +101,7 @@ function Gylph() {
         .attr("dy", "5px")
         .attr("x", "5px")
         .append("textPath")
-        .attr("xlink:href", `#arcPath-${index}`)
+        .attr("xlink:href", `#arcTextPath-${index}-${id}`)
         .attr("startOffset", "50%")
         .attr("fill", "rgb(224, 225, 221)")
         .attr("font-size", "14px")
@@ -108,7 +109,7 @@ function Gylph() {
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
     });
-  }, [outerRadii]);
+  }, [outerRadii, id, handleArcClick]);
 
   return (
     <div className="circle-container">
