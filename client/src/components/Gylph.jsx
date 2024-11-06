@@ -38,8 +38,8 @@ function Gylph() {
   useEffect(() => {
     d3.select(svgRef.current).selectAll("*").remove();
 
-    const width = 275;
-    const height = 275;
+    const width = 285;
+    const height = 285;
 
     const svg = d3
       .select(svgRef.current)
@@ -58,31 +58,57 @@ function Gylph() {
       .attr("fill", "rgb(119, 141, 169)");
 
     const arcsData = [
-      { startAngle: 5.8, endAngle: 5.4 },
-      { startAngle: 5.3, endAngle: 4.9 },
-      { startAngle: 4, endAngle: 4.4 },
-      { startAngle: 3.5, endAngle: 3.9 },
+      { startAngle: 5.8, endAngle: 5.4, label: "SMA 50" },
+      { startAngle: 5.3, endAngle: 4.9, label: "SMA 100" },
+      { startAngle: 4, endAngle: 4.4, label: "EMA" },
+      { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
     ];
 
     arcsData.forEach((arcsData, index) => {
+      const arc = generateButton(
+        5,
+        arcsData.startAngle,
+        arcsData.endAngle,
+        outerRadii[index]
+      );
+
       mainGroup
         .append("path")
-        .attr(
-          "d",
-          generateButton(
-            5,
-            arcsData.startAngle,
-            arcsData.endAngle,
-            outerRadii[index]
-          )
-        )
+        .attr("d", arc)
         .attr("fill", buttonFillColour)
         .attr("stroke", buttonStrokeColour)
         .attr("stroke-width", 1)
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
+
+      const textArc = d3
+        .arc()
+        .innerRadius(circleRadius + outerRadii[index] + 10) // Adjust radius to place text above the arc
+        .outerRadius(circleRadius + outerRadii[index] + 10)
+        .startAngle(arcsData.startAngle)
+        .endAngle(arcsData.endAngle);
+
+      mainGroup
+        .append("path")
+        .attr("d", textArc)
+        .attr("id", `arcPath-${index}`)
+        .attr("fill", "none")
+        .attr("stroke", "none");
+
+      mainGroup
+        .append("text")
+        .attr("dy", "5px")
+        .attr("x", "5px")
+        .append("textPath")
+        .attr("xlink:href", `#arcPath-${index}`)
+        .attr("startOffset", "50%")
+        .attr("fill", "rgb(224, 225, 221)")
+        .attr("font-size", "14px")
+        .text(arcsData.label)
+        .style("cursor", "pointer")
+        .on("click", () => handleArcClick(index));
     });
-  });
+  }, [outerRadii]);
 
   return (
     <div className="circle-container">
