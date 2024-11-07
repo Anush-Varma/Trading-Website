@@ -6,6 +6,7 @@
   --component-colour3: rgb(224, 225, 221);
   --border-radius: 10px;
   --shadow-colour: rgb(13, 27, 42);
+  font-family: "Nunito Sans", sans-serif;
 }
 
 body {

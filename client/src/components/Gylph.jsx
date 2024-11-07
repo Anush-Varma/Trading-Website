@@ -38,8 +38,8 @@ function Gylph({ id }) {
   useEffect(() => {
     d3.select(svgRef.current).selectAll("*").remove();
 
-    const width = 285;
-    const height = 285;
+    const width = 300;
+    const height = 300;
 
     const svg = d3
       .select(svgRef.current)

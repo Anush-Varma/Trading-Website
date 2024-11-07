@@ -21,5 +21,24 @@
   align-items: center;
   text-align: center;
   font-size: large;
+
   position: relative;
+}
+
+.time-slider {
+  display: flex;
+  padding: 10px;
+  width: 250px;
+}
+
+.MuiSlider-rail {
+  background-color: rgba(13, 27, 42, 0.3) !important;
+}
+
+.MuiSlider-track {
+  background-color: var(--bg-colour2) !important;
+}
+
+.MuiSlider-thumb {
+  background-color: var(--bg-colour2) !important;
 }
