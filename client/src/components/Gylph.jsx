@@ -67,7 +67,7 @@ function Gylph({ id }) {
       { startAngle: 5.3, endAngle: 4.7, label: "SMA 50 / 100" },
       { startAngle: 4, endAngle: 4.6, label: "EMA 10 / 50" },
       { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
-      { startAngle: 2, endAngle: 2.4, label: "ISA" },
+      { startAngle: 2, endAngle: 2.4, label: "Temp" },
     ];
 
     arcsData.forEach((arcsData, index) => {
