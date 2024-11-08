@@ -2,6 +2,14 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
 
+// TO DO: Change the  dynamic size changing of buttons from
+// large to small instead from small to large
+//
+// TO DO: Change button names to: SMA50/100, SMA10/50, MACD, EMA10/50,
+// TO DO: Make RSI indicator
+// TO DO: Mke connected scatter plot andimport Vijay's data set.
+// TO DO: Make expanssion of connected scatter plot as 2 graphs with sychronisation.
+
 function Gylph({ id }) {
   const svgRef = useRef();
   const circleRadius = 100;
