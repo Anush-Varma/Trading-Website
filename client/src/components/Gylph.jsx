@@ -2,23 +2,20 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
 
-// TO DO: Change the  dynamic size changing of buttons from
-// large to small instead from small to large
-//
-// TO DO: Change button names to: SMA50/100, SMA10/50, MACD, EMA10/50,
 // TO DO: Make RSI indicator
 // TO DO: Mke connected scatter plot andimport Vijay's data set.
 // TO DO: Make expanssion of connected scatter plot as 2 graphs with sychronisation.
 
 function Gylph({ id }) {
   const svgRef = useRef();
-  const circleRadius = 100;
+  const circleRadius = 80;
   const buttonFillColour = "rgb(13, 27, 42)";
   const buttonStrokeColour = "rgb(119, 141, 169)";
-  const initialRadius = 30;
-  const clickedRadius = 35;
+  const initialRadius = 40;
+  const clickedRadius = 30;
 
   const [outerRadii, setOuterRadii] = useState([
+    initialRadius,
     initialRadius,
     initialRadius,
     initialRadius,
@@ -66,10 +63,11 @@ function Gylph({ id }) {
       .attr("fill", "rgb(119, 141, 169)");
 
     const arcsData = [
-      { startAngle: 5.8, endAngle: 5.4, label: "SMA 50" },
-      { startAngle: 5.3, endAngle: 4.9, label: "SMA 100" },
-      { startAngle: 4, endAngle: 4.4, label: "EMA" },
+      { startAngle: 6, endAngle: 5.4, label: "SMA 10 / 50" },
+      { startAngle: 5.3, endAngle: 4.7, label: "SMA 50 / 100" },
+      { startAngle: 4, endAngle: 4.6, label: "EMA 10 / 50" },
       { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
+      { startAngle: 2, endAngle: 2.4, label: "ISA" },
     ];
 
     arcsData.forEach((arcsData, index) => {
@@ -106,13 +104,13 @@ function Gylph({ id }) {
 
       mainGroup
         .append("text")
-        .attr("dy", "5px")
-        .attr("x", "5px")
+        .attr("dy", "6px")
+        .attr("x", "7px")
         .append("textPath")
         .attr("xlink:href", `#arcTextPath-${index}-${id}`)
         .attr("startOffset", "50%")
         .attr("fill", "rgb(224, 225, 221)")
-        .attr("font-size", "14px")
+        .attr("font-size", "12px")
         .text(arcsData.label)
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
