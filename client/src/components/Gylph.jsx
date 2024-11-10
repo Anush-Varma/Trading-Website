@@ -57,6 +57,7 @@ function Gylph({ id }) {
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
+    // create circle glyph
     mainGroup
       .append("circle")
       .attr("r", circleRadius)
@@ -67,8 +68,10 @@ function Gylph({ id }) {
       { startAngle: 5.3, endAngle: 4.7, label: "SMA 50 / 100" },
       { startAngle: 4, endAngle: 4.6, label: "EMA 10 / 50" },
       { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
-      { startAngle: 2, endAngle: 2.4, label: "Temp" },
+      { startAngle: 2.5, endAngle: 2.9, label: "%k / %d" },
     ];
+
+    // add buttons to glyph with text
 
     arcsData.forEach((arcsData, index) => {
       const arc = generateButton(
@@ -115,6 +118,15 @@ function Gylph({ id }) {
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
     });
+
+    const rsiIndicator = d3
+      .arc()
+      .innerRadius(circleRadius)
+      .outerRadius(circleRadius + 15)
+      .startAngle(Math.PI / 2)
+      .endAngle(0);
+
+    mainGroup.append("path").attr("d", rsiIndicator);
   }, [outerRadii, id, handleArcClick]);
 
   return (
