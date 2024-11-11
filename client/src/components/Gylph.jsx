@@ -122,7 +122,7 @@ function Gylph({ id }) {
     const rsiIndicator = d3
       .arc()
       .innerRadius(circleRadius)
-      .outerRadius(circleRadius + 15)
+      .outerRadius(circleRadius + 10)
       .startAngle(Math.PI / 2)
       .endAngle(0);
 
