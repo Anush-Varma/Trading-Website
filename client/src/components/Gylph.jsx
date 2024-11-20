@@ -8,7 +8,7 @@ import "../styles/gylph.css";
 
 function Gylph({ id }) {
   const svgRef = useRef();
-  const circleRadius = 80;
+  const circleRadius = 85;
   const buttonFillColour = "rgb(13, 27, 42)";
   const buttonStrokeColour = "rgb(119, 141, 169)";
   const initialRadius = 40;
@@ -134,6 +134,9 @@ function Gylph({ id }) {
     const lineValues = [
       {
         // 0% line data
+        text: "0%",
+        textx: +20,
+        texty: -5,
         angle: -Math.PI / 2,
         x1: circleRadius,
         y1: -5 + circleRadius,
@@ -142,6 +145,9 @@ function Gylph({ id }) {
       },
       {
         // 100% line data
+        text: "100%",
+        textx: +45,
+        texty: +5,
         angle: 0,
         x1: -5 + circleRadius,
         y1: circleRadius,
@@ -150,6 +156,9 @@ function Gylph({ id }) {
       },
       {
         // 30% line data
+        text: "30%",
+        textx: +30,
+        texty: -5,
         angle: (-7 / 20) * Math.PI,
         x1: circleRadius,
         y1: circleRadius,
@@ -158,6 +167,9 @@ function Gylph({ id }) {
       },
       {
         // 70% line data
+        text: "70%",
+        textx: +35,
+        texty: 0,
         angle: (-3 / 20) * Math.PI,
         x1: circleRadius,
         y1: circleRadius,
@@ -181,6 +193,12 @@ function Gylph({ id }) {
         .attr("y2", endY)
         .attr("stroke", "rgb(119, 141, 169)")
         .attr("stroke-width", 3);
+      mainGroup
+        .append("text")
+        .attr("text-anchor", "end")
+        .attr("x", endX + 45)
+        .attr("y", endY + 5)
+        .text(line.text);
     });
   }, [outerRadii, id, handleArcClick]);
 
