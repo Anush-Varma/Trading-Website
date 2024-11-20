@@ -9,8 +9,8 @@ import "../styles/gylph.css";
 function Gylph({ id }) {
   const svgRef = useRef();
   const circleRadius = 85;
-  const buttonFillColour = "rgb(13, 27, 42)";
-  const buttonStrokeColour = "rgb(119, 141, 169)";
+  const componentColour = "rgb(13, 27, 42)";
+  const componentColour2 = "rgb(119, 141, 169)";
   const initialRadius = 40;
   const clickedRadius = 30;
 
@@ -84,9 +84,9 @@ function Gylph({ id }) {
       mainGroup
         .append("path")
         .attr("d", arc)
-        .attr("fill", buttonFillColour)
+        .attr("fill", componentColour)
 
-        .attr("stroke", buttonStrokeColour)
+        .attr("stroke", componentColour2)
         .attr("stroke-width", 1)
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
@@ -129,7 +129,7 @@ function Gylph({ id }) {
     mainGroup
       .append("path")
       .attr("d", rsiIndicator)
-      .attr("fill", buttonFillColour);
+      .attr("fill", componentColour);
 
     const lineValues = [
       {
@@ -195,9 +195,11 @@ function Gylph({ id }) {
         .attr("stroke-width", 3);
       mainGroup
         .append("text")
+        .attr("fill", "rgb(224, 225, 221)")
+        .attr("font-size", "15px")
         .attr("text-anchor", "end")
-        .attr("x", endX + 45)
-        .attr("y", endY + 5)
+        .attr("x", endX + line.textx)
+        .attr("y", endY + line.texty)
         .text(line.text);
     });
   }, [outerRadii, id, handleArcClick]);
