@@ -5,7 +5,7 @@ import Gylph from "./Gylph";
 import Slider from "@mui/material/Slider";
 
 function valuetext(value) {
-  return `${value}°C`;
+  return `${value}`;
 }
 
 const minDistance = 10;
@@ -13,7 +13,7 @@ const minDistance = 10;
 function Card(props) {
   const [value1, setValue1] = React.useState([20, 37]);
 
-  const handleChange1 = (event, newValue, activeThumb) => {
+  const timeSlider = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -32,9 +32,8 @@ function Card(props) {
       <Box className="time-slider">
         <Slider
           className="slider"
-          getAriaLabel={() => "Minimum distance"}
           value={value1}
-          onChange={handleChange1}
+          onChange={timeSlider}
           valueLabelDisplay="auto"
           getAriaValueText={valuetext}
           disableSwap

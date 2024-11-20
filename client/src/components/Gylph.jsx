@@ -113,7 +113,7 @@ function Gylph({ id }) {
         .attr("xlink:href", `#arcTextPath-${index}-${id}`)
         .attr("startOffset", "50%")
         .attr("fill", "rgb(224, 225, 221)")
-        .attr("font-size", "12px")
+        .attr("font-size", "11px")
         .text(arcsData.label)
         .style("cursor", "pointer")
         .on("click", () => handleArcClick(index));
@@ -122,11 +122,66 @@ function Gylph({ id }) {
     const rsiIndicator = d3
       .arc()
       .innerRadius(circleRadius)
-      .outerRadius(circleRadius + 10)
+      .outerRadius(circleRadius + 15)
       .startAngle(Math.PI / 2)
       .endAngle(0);
 
-    mainGroup.append("path").attr("d", rsiIndicator);
+    mainGroup
+      .append("path")
+      .attr("d", rsiIndicator)
+      .attr("fill", buttonFillColour);
+
+    const lineValues = [
+      {
+        // 0% line data
+        angle: -Math.PI / 2,
+        x1: circleRadius,
+        y1: -5 + circleRadius,
+        x2: circleRadius,
+        y2: circleRadius + 20,
+      },
+      {
+        // 100% line data
+        angle: 0,
+        x1: -5 + circleRadius,
+        y1: circleRadius,
+        x2: circleRadius + 20,
+        y2: circleRadius,
+      },
+      {
+        // 30% line data
+        angle: (-7 / 20) * Math.PI,
+        x1: circleRadius,
+        y1: circleRadius,
+        x2: circleRadius + 20,
+        y2: circleRadius + 20,
+      },
+      {
+        // 70% line data
+        angle: (-3 / 20) * Math.PI,
+        x1: circleRadius,
+        y1: circleRadius,
+        x2: circleRadius + 20,
+        y2: circleRadius + 20,
+      },
+    ];
+
+    lineValues.forEach((line) => {
+      const startX = line.x1 * Math.cos(line.angle);
+      const startY = line.y1 * Math.sin(line.angle);
+
+      const endX = line.x2 * Math.cos(line.angle);
+      const endY = line.y2 * Math.sin(line.angle);
+
+      mainGroup
+        .append("line")
+        .attr("x1", startX)
+        .attr("y1", startY)
+        .attr("x2", endX)
+        .attr("y2", endY)
+        .attr("stroke", "rgb(119, 141, 169)")
+        .attr("stroke-width", 3);
+    });
   }, [outerRadii, id, handleArcClick]);
 
   return (
