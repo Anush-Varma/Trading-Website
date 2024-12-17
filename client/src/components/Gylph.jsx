@@ -94,7 +94,7 @@ function Gylph({ id }) {
 
       const textArc = d3
         .arc()
-        .innerRadius(circleRadius + outerRadii[index] + 10) // Adjust radius to place text above the arc
+        .innerRadius(circleRadius + outerRadii[index] + 10)
         .outerRadius(circleRadius + outerRadii[index] + 10)
         .startAngle(arcsData.startAngle)
         .endAngle(arcsData.endAngle);
