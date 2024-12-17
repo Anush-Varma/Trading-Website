@@ -242,7 +242,7 @@ function Gylph({ id }) {
       .attr("r", 2)
       .attr("fill", (d, i) => colourScale(i))
       .attr("opacity", 0.7)
-      .on("mouseover", function (event, d) {
+      .on("mouseover", function (d) {
         d3.select(this).attr("r", 5).attr("opacity", 1);
 
         mainGroup
