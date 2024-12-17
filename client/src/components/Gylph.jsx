@@ -3,8 +3,6 @@ import * as d3 from "d3";
 import "../styles/gylph.css";
 import data from "../data/stockData/test_data.json";
 
-// TO DO: Make RSI indicator
-// TO DO: Mke connected scatter plot andimport Vijay's data set.
 // TO DO: Make expanssion of connected scatter plot as 2 graphs with sychronisation.
 
 function Gylph({ id }) {
