@@ -39,6 +39,91 @@ function Gylph({ id }) {
     return arcButton;
   }
 
+  function generateConnectedGraph(mainGroup) {
+    const connectedGraphGroup = mainGroup.append("g");
+
+    const graphRadius = circleRadius * 0.55;
+
+    const xExtent = d3.extent(data, (d) => d.SMA10);
+    const yExtent = d3.extent(data, (d) => d.SMA50);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain(xExtent)
+      .range([-graphRadius, graphRadius]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain(yExtent)
+      .range([graphRadius, -graphRadius]);
+
+    const colourScale = d3
+      .scaleLinear()
+      .domain([0, data.length - 1])
+      .range(["red", "green"]);
+
+    connectedGraphGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", componentColour)
+      .attr("stroke-width", 1);
+
+    connectedGraphGroup
+      .selectAll(".scatter-point")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "scatter-point")
+      .attr("cx", (d) => xScale(d.SMA10))
+      .attr("cy", (d) => yScale(d.SMA50))
+      .attr("r", 2)
+      .attr("fill", (d, i) => colourScale(i))
+      .attr("opacity", 0.7)
+      .on("mouseover", function (event, d) {
+        // NEEED event DO NOT REMOVE!!!!!
+        d3.select(this).attr("r", 5).attr("opacity", 1);
+
+        connectedGraphGroup
+          .append("text")
+          .attr("id", "tooltip-text") // Add an ID for easy removal
+          .attr("x", xScale(d.SMA10)) // Position slightly offset from the point
+          .attr("y", yScale(d.SMA50))
+          .attr("font-size", "12px")
+          .attr("fill", "yellow")
+          .text(`(${d.SMA10.toFixed(2)}, ${d.SMA50.toFixed(2)})`);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("r", 2).attr("opacity", 0.7);
+
+        d3.select("#tooltip-text").remove();
+      });
+
+    const xAxis = d3.axisBottom(xScale).ticks(5);
+    const yAxis = d3.axisLeft(yScale).ticks(5);
+
+    connectedGraphGroup
+      .append("g")
+      .attr("transform", `translate(0, ${graphRadius})`)
+      .call(xAxis);
+
+    connectedGraphGroup
+      .append("g")
+      .attr("transform", `translate(-${graphRadius}, 0)`)
+      .call(yAxis);
+
+    connectedGraphGroup
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", 0)
+      .attr("y", graphRadius + 30)
+      .text("SMA 10")
+      .attr("fill", componentColour)
+      .attr("font-size", "11px");
+
+    return connectedGraphGroup;
+  }
+
   useEffect(() => {
     d3.select(svgRef.current).selectAll("*").remove();
 
@@ -176,7 +261,6 @@ function Gylph({ id }) {
         y2: circleRadius + 20,
       },
     ];
-
     lineValues.forEach((line) => {
       const startX = line.x1 * Math.cos(line.angle);
       const startY = line.y1 * Math.sin(line.angle);
@@ -201,84 +285,7 @@ function Gylph({ id }) {
         .attr("y", endY + line.texty)
         .text(line.text);
     });
-
-    const graphRadius = circleRadius * 0.55;
-
-    const xExtent = d3.extent(data, (d) => d.SMA10);
-    const yExtent = d3.extent(data, (d) => d.SMA50);
-
-    const xScale = d3
-      .scaleLinear()
-      .domain(xExtent)
-      .range([-graphRadius, graphRadius]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain(yExtent)
-      .range([graphRadius, -graphRadius]);
-
-    const colourScale = d3
-      .scaleLinear()
-      .domain([0, data.length - 1])
-      .range(["red", "green"]);
-
-    mainGroup
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", componentColour)
-      .attr("stroke-width", 1);
-
-    mainGroup
-      .selectAll(".scatter-point")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "scatter-point")
-      .attr("cx", (d) => xScale(d.SMA10))
-      .attr("cy", (d) => yScale(d.SMA50))
-      .attr("r", 2)
-      .attr("fill", (d, i) => colourScale(i))
-      .attr("opacity", 0.7)
-      .on("mouseover", function (d) {
-        d3.select(this).attr("r", 5).attr("opacity", 1);
-
-        mainGroup
-          .append("text")
-          .attr("id", "tooltip-text") // Add an ID for easy removal
-          .attr("x", xScale(d.SMA10) + 5) // Position slightly offset from the point
-          .attr("y", yScale(d.SMA50) - 5)
-          .attr("font-size", "12px")
-          .attr("fill", "yellow")
-          .text(`(${d.SMA10.toFixed(2)}, ${d.SMA50.toFixed(2)})`);
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("r", 2).attr("opacity", 0.7);
-
-        d3.select("#tooltip-text").remove();
-      });
-
-    const xAxis = d3.axisBottom(xScale).ticks(5);
-    const yAxis = d3.axisLeft(yScale).ticks(5);
-
-    mainGroup
-      .append("g")
-      .attr("transform", `translate(0, ${graphRadius})`)
-      .call(xAxis);
-
-    mainGroup
-      .append("g")
-      .attr("transform", `translate(-${graphRadius}, 0)`)
-      .call(yAxis);
-
-    mainGroup
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr("x", 0)
-      .attr("y", graphRadius + 30)
-      .text("SMA 10")
-      .attr("fill", componentColour)
-      .attr("font-size", "11px");
+    generateConnectedGraph(mainGroup);
   }, [outerRadii, id, handleArcClick]);
 
   return (
