@@ -8,7 +8,7 @@ function HomePage() {
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const stocksPerPage = 10;
+  const stocksPerPage = 30;
 
   useEffect(() => {
     const fetchStockTickers = async () => {
