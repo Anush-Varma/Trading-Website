@@ -5,4 +5,42 @@
   width: 300px;
   height: 300px;
   position: relative;
+  z-index: 1;
+}
+
+.expanded-graph-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  pointer-events: all;
+}
+
+.expanded-graph-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  pointer-events: all;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 1100px;
+}
+
+.blurred {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+#tooltip-text {
+  z-index: 10001;
+  pointer-events: none;
 }

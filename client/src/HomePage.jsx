@@ -1,17 +1,46 @@
 import Nav from "./components/Nav";
 import Card from "./components/Card";
 import "./styles/homePage.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function HomePage() {
-  const cardCount = Array.from({ length: 5 });
+  const [stockTickers, setStockTickers] = useState([]);
+  const [stockData, setStockData] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const stocksPerPage = 10;
+
+  useEffect(() => {
+    const fetchStockTickers = async () => {
+      const response = await axios.get("/data/stocks_30.json");
+      const tickers = Object.keys(response.data);
+      setStockTickers(tickers);
+      setStockData(response.data);
+    };
+    fetchStockTickers();
+  }, []);
+
+  const getStockData = async (ticker) => {
+    const response = await axios.get(`/data/stocks_30.json`);
+    return response.data[ticker];
+  };
+
+  const indexOfLastStock = currentPage * stocksPerPage;
+  const indexOfFirstStock = indexOfLastStock - stocksPerPage;
+  const currentStocks = stockTickers.slice(indexOfFirstStock, indexOfLastStock);
 
   return (
     <div className="home-page">
       <Nav></Nav>
       <div className="cards-wrapper">
         <div className="cards">
-          {cardCount.map((_, index) => (
-            <Card key={index} index={index}></Card>
+          {currentStocks.map((ticker, index) => (
+            <Card
+              key={ticker}
+              index={index}
+              ticker={ticker}
+              stockData={stockData[ticker]}
+            />
           ))}
         </div>
       </div>

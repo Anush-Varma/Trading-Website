@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
-import data from "../data/stockData/test_data.json";
+import { use } from "react";
 
-// TO DO: Make expanssion of connected scatter plot as 2 graphs with sychronisation.
-
-function Gylph({ id }) {
-  const svgRef = useRef();
+function Gylph({ id, data }) {
   const circleRadius = 85;
   const componentColour = "rgb(13, 27, 42)";
   const componentColour2 = "rgb(119, 141, 169)";
   const initialRadius = 40;
   const clickedRadius = 30;
 
+  const svgRef = useRef();
+  const expandedPlot = useRef(null);
+  const expandedPlot2 = useRef(null);
+
+  const [isExpanded, setIsExpanded] = useState(false);
   const [outerRadii, setOuterRadii] = useState([
     initialRadius,
     initialRadius,
@@ -27,104 +29,12 @@ function Gylph({ id }) {
     );
   }, []);
 
-  function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
-    const arcButton = d3
-      .arc()
-      .innerRadius(circleRadius)
-      .outerRadius(circleRadius + outerRadius)
-      .cornerRadius(cornerRadius)
-      .startAngle(startAngle)
-      .endAngle(endAngle);
-
-    return arcButton;
-  }
-
-  function generateConnectedGraph(mainGroup) {
-    const connectedGraphGroup = mainGroup.append("g");
-
-    const graphRadius = circleRadius * 0.55;
-
-    const xExtent = d3.extent(data, (d) => d.SMA10);
-    const yExtent = d3.extent(data, (d) => d.SMA50);
-
-    const xScale = d3
-      .scaleLinear()
-      .domain(xExtent)
-      .range([-graphRadius, graphRadius]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain(yExtent)
-      .range([graphRadius, -graphRadius]);
-
-    const colourScale = d3
-      .scaleLinear()
-      .domain([0, data.length - 1])
-      .range(["red", "green"]);
-
-    connectedGraphGroup
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", componentColour)
-      .attr("stroke-width", 1);
-
-    connectedGraphGroup
-      .selectAll(".scatter-point")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "scatter-point")
-      .attr("cx", (d) => xScale(d.SMA10))
-      .attr("cy", (d) => yScale(d.SMA50))
-      .attr("r", 2)
-      .attr("fill", (d, i) => colourScale(i))
-      .attr("opacity", 0.7)
-      .on("mouseover", function (event, d) {
-        // NEEED event DO NOT REMOVE!!!!!
-        d3.select(this).attr("r", 5).attr("opacity", 1);
-
-        connectedGraphGroup
-          .append("text")
-          .attr("id", "tooltip-text") // Add an ID for easy removal
-          .attr("x", xScale(d.SMA10)) // Position slightly offset from the point
-          .attr("y", yScale(d.SMA50))
-          .attr("font-size", "12px")
-          .attr("fill", "yellow")
-          .text(`(${d.SMA10.toFixed(2)}, ${d.SMA50.toFixed(2)})`);
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("r", 2).attr("opacity", 0.7);
-
-        d3.select("#tooltip-text").remove();
-      });
-
-    const xAxis = d3.axisBottom(xScale).ticks(5);
-    const yAxis = d3.axisLeft(yScale).ticks(5);
-
-    connectedGraphGroup
-      .append("g")
-      .attr("transform", `translate(0, ${graphRadius})`)
-      .call(xAxis);
-
-    connectedGraphGroup
-      .append("g")
-      .attr("transform", `translate(-${graphRadius}, 0)`)
-      .call(yAxis);
-
-    connectedGraphGroup
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr("x", 0)
-      .attr("y", graphRadius + 30)
-      .text("SMA 10")
-      .attr("fill", componentColour)
-      .attr("font-size", "11px");
-
-    return connectedGraphGroup;
-  }
+  const handlePlotClick = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   useEffect(() => {
+    if (!data || data.length === 0) return;
     d3.select(svgRef.current).selectAll("*").remove();
 
     const width = 300;
@@ -285,12 +195,240 @@ function Gylph({ id }) {
         .attr("y", endY + line.texty)
         .text(line.text);
     });
-    generateConnectedGraph(mainGroup);
+    generateGlyphConnectedGraph(mainGroup);
   }, [outerRadii, id, handleArcClick]);
+
+  useEffect(() => {
+    if (!data || data.length === 0 || !isExpanded) return;
+    if (isExpanded) {
+      if (expandedPlot.current) {
+        generateExpandedGraph(expandedPlot, 500, 500);
+      }
+      if (expandedPlot2.current) {
+        generateExpandedGraph(expandedPlot2, 500, 500);
+      }
+    }
+  }, [isExpanded]);
+
+  function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
+    const arcButton = d3
+      .arc()
+      .innerRadius(circleRadius)
+      .outerRadius(circleRadius + outerRadius)
+      .cornerRadius(cornerRadius)
+      .startAngle(startAngle)
+      .endAngle(endAngle);
+
+    return arcButton;
+  }
+
+  function generateGlyphConnectedGraph(mainGroup) {
+    const connectedGraphGroup = mainGroup.append("g");
+
+    const graphRadius = circleRadius * 0.55;
+
+    const xExtent = d3.extent(data, (d) => d.SMA10);
+    const yExtent = d3.extent(data, (d) => d.SMA50);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain(xExtent)
+      .range([-graphRadius, graphRadius]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain(yExtent)
+      .range([graphRadius, -graphRadius]);
+
+    const colourScale = d3
+      .scaleLinear()
+      .domain([0, data.length - 1])
+      .range(["red", "green"]);
+
+    connectedGraphGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", componentColour)
+      .attr("stroke-width", 1);
+
+    connectedGraphGroup
+      .attr("class", "connected-graph")
+      .style("cursor", "pointer")
+      .on("click", (e) => {
+        e.stopPropagation();
+        handlePlotClick(id);
+        setIsExpanded(!isExpanded);
+      });
+
+    connectedGraphGroup
+      .append("circle")
+      .attr("r", graphRadius)
+      .attr("fill", "transparent");
+
+    connectedGraphGroup
+      .selectAll(".scatter-point")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "scatter-point")
+      .attr("cx", (d) => xScale(d.SMA10))
+      .attr("cy", (d) => yScale(d.SMA50))
+      .attr("r", 2)
+      .attr("fill", (d, i) => colourScale(i))
+      .attr("opacity", 0.7)
+      .on("mouseover", function (event, d) {
+        // NEEED event DO NOT REMOVE!!!!!
+        d3.select(this).attr("r", 5).attr("opacity", 1);
+
+        connectedGraphGroup
+          .append("text")
+          .attr("id", "tooltip-text")
+          .attr("x", xScale(d.SMA10))
+          .attr("y", yScale(d.SMA50))
+          .attr("font-size", "12px")
+          .attr("fill", "yellow")
+          .text(`(${d.SMA10.toFixed(2)}, ${d.SMA50.toFixed(2)})`);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("r", 2).attr("opacity", 0.7);
+
+        d3.select("#tooltip-text").remove();
+      });
+
+    const xAxis = d3.axisBottom(xScale).ticks(3);
+    const yAxis = d3.axisLeft(yScale).ticks(3);
+
+    connectedGraphGroup
+      .append("g")
+      .attr("transform", `translate(0, ${graphRadius})`)
+      .call(xAxis);
+
+    connectedGraphGroup
+      .append("g")
+      .attr("transform", `translate(-${graphRadius}, 0)`)
+      .call(yAxis);
+
+    connectedGraphGroup
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", 0)
+      .attr("y", graphRadius + 30)
+      .text("SMA 10")
+      .attr("fill", componentColour)
+      .attr("font-size", "11px");
+
+    return connectedGraphGroup;
+  }
+
+  function generateExpandedGraph(ref, width, height) {
+    d3.select(ref.current).selectAll("*").remove();
+    const svg = d3
+      .select(ref.current)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    const xExtent = d3.extent(data, (d) => d.SMA10);
+    const yExtent = d3.extent(data, (d) => d.SMA50);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain(xExtent)
+      .range([margin.left, innerWidth + margin.left]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain(yExtent)
+      .range([innerHeight + margin.top, margin.top]);
+
+    const colourScale = d3
+      .scaleLinear()
+      .domain([0, data.length - 1])
+      .range(["red", "green"]);
+
+    const expandedGraphGroup = svg.append("g");
+
+    svg
+      .append("g")
+      .attr("transform", `translate(0,${innerHeight + margin.top})`)
+      .call(d3.axisBottom(xScale))
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", 40)
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .style("font-size", "18px")
+      .text("SMA 10");
+
+    // Add Y axis
+    svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(yScale))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -40)
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .style("font-size", "18px")
+      .text("SMA 50");
+
+    expandedGraphGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", componentColour)
+      .attr("stroke-width", 1)
+      .attr(
+        "d",
+        d3
+          .line()
+          .x((d) => xScale(d.SMA10))
+          .y((d) => yScale(d.SMA50))
+      );
+
+    expandedGraphGroup
+      .selectAll(".scatter-point")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "scatter-point")
+      .attr("cx", (d) => xScale(d.SMA10))
+      .attr("cy", (d) => yScale(d.SMA50))
+      .attr("r", 2)
+      .attr("fill", (d, i) => colourScale(i))
+      .attr("opacity", 0.7);
+  }
+
+  if (!data || data.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="circle-container">
       <svg ref={svgRef} className="w-full h-full"></svg>
+      {isExpanded && (
+        <div
+          className="expanded-graph-overlay"
+          onClick={() => setIsExpanded(false)}
+        >
+          <div
+            className="expanded-graph-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="left-graph" ref={expandedPlot}></div>
+            <div>
+              <div className="right-graph" ref={expandedPlot2}></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
