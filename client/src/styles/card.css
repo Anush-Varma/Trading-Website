@@ -10,10 +10,18 @@
   width: 340px;
   height: 340px;
   box-shadow: 0 5px 8px var(--shadow-colour);
-  opacity: 0.9;
 }
-.card:hover {
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+.card::before {
+  content: "";
+  position: absolute;
+  border-radius: 20px;
+  background-color: var(--component-colour);
+  opacity: 0.9;
+  z-index: -1;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover::before {
   opacity: 1;
 }
 

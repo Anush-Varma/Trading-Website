@@ -499,9 +499,7 @@ function Gylph({ id, data }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="left-graph" ref={expandedPlot}></div>
-            <div>
-              <div className="right-graph" ref={expandedPlot2}></div>
-            </div>
+            <div className="right-graph" ref={expandedPlot2}></div>
           </div>
         </div>
       )}

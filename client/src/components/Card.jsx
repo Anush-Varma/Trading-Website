@@ -28,7 +28,7 @@ function Card(props) {
   return (
     <div className="card">
       <h1 className="stock-symbol">{props.ticker}</h1>
-      <Gylph id={props.index} data={props.stockData}></Gylph>
+      <Gylph className="gylph" id={props.index} data={props.stockData}></Gylph>
       <Box className="time-slider">
         <Slider
           className="slider"
