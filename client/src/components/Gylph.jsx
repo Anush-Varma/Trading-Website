@@ -21,7 +21,7 @@ function Gylph({ id, data }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [outerRadii, setOuterRadii] = useState([
-    initialRadius,
+    clickedRadius,
     initialRadius,
     initialRadius,
     initialRadius,
@@ -239,10 +239,10 @@ function Gylph({ id, data }) {
     if (!data || data.length === 0 || !isExpanded) return;
     if (isExpanded) {
       if (expandedPlot.current) {
-        generateExpandedGraph(expandedPlot, 500, 500);
+        generateExpandedGraph(expandedPlot, 650, 500);
       }
       if (expandedPlot2.current) {
-        generateExpandedGraph(expandedPlot2, 500, 500);
+        generateExpandedGraph(expandedPlot2, 650, 500);
       }
     }
   }, [isExpanded]);
@@ -267,14 +267,17 @@ function Gylph({ id, data }) {
     const xExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
     const yExtent = d3.extent(data, (d) => d[indicatorSeclected.yAxis]);
 
+    const xPadding = (xExtent[1] - xExtent[0]) * 0.05;
+    const yPadding = (yExtent[1] - yExtent[0]) * 0.05;
+
     const xScale = d3
       .scaleLinear()
-      .domain(xExtent)
+      .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
       .range([-graphRadius, graphRadius]);
 
     const yScale = d3
       .scaleLinear()
-      .domain(yExtent)
+      .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
       .range([graphRadius, -graphRadius]);
 
     const colourScale = d3
@@ -355,7 +358,15 @@ function Gylph({ id, data }) {
       .attr("text-anchor", "middle")
       .attr("x", 0)
       .attr("y", graphRadius + 30)
-      .text("SMA 10")
+      .text(`${indicatorSeclected.xAxis}`)
+      .attr("fill", componentColour)
+      .attr("font-size", "11px");
+
+    connectedGraphGroup
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `rotate(-90) translate(0,-${graphRadius + 25})`)
+      .text(`${indicatorSeclected.yAxis}`)
       .attr("fill", componentColour)
       .attr("font-size", "11px");
 
@@ -367,7 +378,7 @@ function Gylph({ id, data }) {
     const svg = d3
       .select(ref.current)
       .append("svg")
-      .attr("width", width)
+      .attr("width", width + 20)
       .attr("height", height);
 
     const margin = { top: 40, right: 40, bottom: 60, left: 60 };
@@ -375,16 +386,19 @@ function Gylph({ id, data }) {
     const innerHeight = height - margin.top - margin.bottom;
 
     const xExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
-    const yExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
+    const yExtent = d3.extent(data, (d) => d[indicatorSeclected.yAxis]);
+
+    const xPadding = (xExtent[1] - xExtent[0]) * 0.05;
+    const yPadding = (yExtent[1] - yExtent[0]) * 0.05;
 
     const xScale = d3
       .scaleLinear()
-      .domain(xExtent)
+      .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
       .range([margin.left, innerWidth + margin.left]);
 
     const yScale = d3
       .scaleLinear()
-      .domain(yExtent)
+      .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
       .range([innerHeight + margin.top, margin.top]);
 
     const colourScale = d3
@@ -406,7 +420,6 @@ function Gylph({ id, data }) {
       .style("font-size", "18px")
       .text(`${indicatorSeclected.xAxis}`);
 
-    // Add Y axis
     svg
       .append("g")
       .attr("transform", `translate(${margin.left},0)`)
@@ -420,19 +433,19 @@ function Gylph({ id, data }) {
       .style("font-size", "18px")
       .text(`${indicatorSeclected.yAxis}`);
 
-    expandedGraphGroup
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", componentColour)
-      .attr("stroke-width", 1)
-      .attr(
-        "d",
-        d3
-          .line()
-          .x((d) => xScale(d[indicatorSeclected.xAxis]))
-          .y((d) => yScale(d[indicatorSeclected.yAxis]))
-      );
+    // expandedGraphGroup
+    //   .append("path")
+    //   .datum(data)
+    //   .attr("fill", "none")
+    //   .attr("stroke", componentColour)
+    //   .attr("stroke-width", 1)
+    //   .attr(
+    //     "d",
+    //     d3
+    //       .line()
+    //       .x((d) => xScale(d[indicatorSeclected.xAxis]))
+    //       .y((d) => yScale(d[indicatorSeclected.yAxis]))
+    //   );
 
     expandedGraphGroup
       .selectAll(".scatter-point")
@@ -444,7 +457,29 @@ function Gylph({ id, data }) {
       .attr("cy", (d) => yScale(d[indicatorSeclected.yAxis]))
       .attr("r", 2)
       .attr("fill", (d, i) => colourScale(i))
-      .attr("opacity", 0.7);
+      .attr("opacity", 0.7)
+      .on("mouseover", function (event, d) {
+        // NEEED event DO NOT REMOVE!!!!!
+        d3.select(this).attr("r", 4).attr("opacity", 1);
+
+        expandedGraphGroup
+          .append("text")
+          .attr("id", "tooltip-text")
+          .attr("x", xScale(d[indicatorSeclected.xAxis]))
+          .attr("y", yScale(d[indicatorSeclected.yAxis]))
+          .attr("font-size", "12px")
+          .attr("fill", "black")
+          .text(
+            `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
+              indicatorSeclected.yAxis
+            ].toFixed(2)})`
+          );
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("r", 2).attr("opacity", 0.7);
+
+        d3.select("#tooltip-text").remove();
+      });
   }
 
   if (!data || data.length === 0) {
