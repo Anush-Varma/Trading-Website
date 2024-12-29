@@ -14,6 +14,11 @@ function Gylph({ id, data }) {
   const expandedPlot = useRef(null);
   const expandedPlot2 = useRef(null);
 
+  const [indicatorSeclected, setIndicatorSelected] = useState({
+    xAxis: "SMA10",
+    yAxis: "SMA50",
+  });
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [outerRadii, setOuterRadii] = useState([
     initialRadius,
@@ -27,6 +32,38 @@ function Gylph({ id, data }) {
     setOuterRadii((prevRadii) =>
       prevRadii.map((_, i) => (i === index ? clickedRadius : initialRadius))
     );
+    switch (index) {
+      case 0:
+        setIndicatorSelected({
+          xAxis: "SMA10",
+          yAxis: "SMA50",
+        });
+        break;
+      case 1:
+        setIndicatorSelected({
+          xAxis: "SMA50",
+          yAxis: "SMA100",
+        });
+        break;
+      case 2:
+        setIndicatorSelected({
+          xAxis: "EMA10",
+          yAxis: "EMA50",
+        });
+        break;
+      case 3:
+        setIndicatorSelected({
+          xAxis: "MACD",
+          yAxis: "EMA10",
+        });
+        break;
+      case 4:
+        setIndicatorSelected({
+          xAxis: "percentK",
+          yAxis: "percentD",
+        });
+        break;
+    }
   }, []);
 
   const handlePlotClick = () => {
@@ -227,8 +264,8 @@ function Gylph({ id, data }) {
 
     const graphRadius = circleRadius * 0.55;
 
-    const xExtent = d3.extent(data, (d) => d.SMA10);
-    const yExtent = d3.extent(data, (d) => d.SMA50);
+    const xExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
+    const yExtent = d3.extent(data, (d) => d[indicatorSeclected.yAxis]);
 
     const xScale = d3
       .scaleLinear()
@@ -272,8 +309,8 @@ function Gylph({ id, data }) {
       .enter()
       .append("circle")
       .attr("class", "scatter-point")
-      .attr("cx", (d) => xScale(d.SMA10))
-      .attr("cy", (d) => yScale(d.SMA50))
+      .attr("cx", (d) => xScale(d[indicatorSeclected.xAxis]))
+      .attr("cy", (d) => yScale(d[indicatorSeclected.yAxis]))
       .attr("r", 2)
       .attr("fill", (d, i) => colourScale(i))
       .attr("opacity", 0.7)
@@ -284,11 +321,15 @@ function Gylph({ id, data }) {
         connectedGraphGroup
           .append("text")
           .attr("id", "tooltip-text")
-          .attr("x", xScale(d.SMA10))
-          .attr("y", yScale(d.SMA50))
+          .attr("x", xScale(d[indicatorSeclected.xAxis]))
+          .attr("y", yScale(d[indicatorSeclected.yAxis]))
           .attr("font-size", "12px")
           .attr("fill", "yellow")
-          .text(`(${d.SMA10.toFixed(2)}, ${d.SMA50.toFixed(2)})`);
+          .text(
+            `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
+              indicatorSeclected.yAxis
+            ].toFixed(2)})`
+          );
       })
       .on("mouseout", function () {
         d3.select(this).attr("r", 2).attr("opacity", 0.7);
@@ -333,8 +374,8 @@ function Gylph({ id, data }) {
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    const xExtent = d3.extent(data, (d) => d.SMA10);
-    const yExtent = d3.extent(data, (d) => d.SMA50);
+    const xExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
+    const yExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
 
     const xScale = d3
       .scaleLinear()
@@ -363,7 +404,7 @@ function Gylph({ id, data }) {
       .attr("fill", "black")
       .attr("text-anchor", "middle")
       .style("font-size", "18px")
-      .text("SMA 10");
+      .text(`${indicatorSeclected.xAxis}`);
 
     // Add Y axis
     svg
@@ -377,7 +418,7 @@ function Gylph({ id, data }) {
       .attr("fill", "black")
       .attr("text-anchor", "middle")
       .style("font-size", "18px")
-      .text("SMA 50");
+      .text(`${indicatorSeclected.yAxis}`);
 
     expandedGraphGroup
       .append("path")
@@ -389,8 +430,8 @@ function Gylph({ id, data }) {
         "d",
         d3
           .line()
-          .x((d) => xScale(d.SMA10))
-          .y((d) => yScale(d.SMA50))
+          .x((d) => xScale(d[indicatorSeclected.xAxis]))
+          .y((d) => yScale(d[indicatorSeclected.yAxis]))
       );
 
     expandedGraphGroup
@@ -399,8 +440,8 @@ function Gylph({ id, data }) {
       .enter()
       .append("circle")
       .attr("class", "scatter-point")
-      .attr("cx", (d) => xScale(d.SMA10))
-      .attr("cy", (d) => yScale(d.SMA50))
+      .attr("cx", (d) => xScale(d[indicatorSeclected.xAxis]))
+      .attr("cy", (d) => yScale(d[indicatorSeclected.yAxis]))
       .attr("r", 2)
       .attr("fill", (d, i) => colourScale(i))
       .attr("opacity", 0.7);
