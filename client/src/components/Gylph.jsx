@@ -18,6 +18,10 @@ function Gylph({ id, data }) {
     xAxis: "SMA10",
     yAxis: "SMA50",
   });
+  const [timeSeriesData, setTimeSeriesData] = useState({
+    xAxis: "date",
+    yAxis: "close",
+  });
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [outerRadii, setOuterRadii] = useState([
@@ -242,10 +246,10 @@ function Gylph({ id, data }) {
         generateExpandedGraph(expandedPlot, 650, 500);
       }
       if (expandedPlot2.current) {
-        generateExpandedGraph(expandedPlot2, 650, 500);
+        generateExpandedTimeGraph(expandedPlot2, 700, 500);
       }
     }
-  }, [isExpanded]);
+  }, [isExpanded, data, timeSeriesData]);
 
   function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
     const arcButton = d3
@@ -478,6 +482,90 @@ function Gylph({ id, data }) {
       .on("mouseout", function () {
         d3.select(this).attr("r", 2).attr("opacity", 0.7);
 
+        d3.select("#tooltip-text").remove();
+      });
+  }
+
+  function generateExpandedTimeGraph(ref, width, height) {
+    d3.select(ref.current).selectAll("*").remove();
+    const svg = d3
+      .select(ref.current)
+      .append("svg")
+      .attr("width", width + 70)
+      .attr("height", height);
+
+    const parseDate = d3.timeParse("%Y-%m-%d");
+    const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    const xExtent = d3.extent(data, (d) => parseDate(d[timeSeriesData.xAxis]));
+    const yExtent = d3.extent(data, (d) => d[timeSeriesData.yAxis]);
+    const xScale = d3
+      .scaleTime()
+      .domain(xExtent)
+      .range([margin.left, innerWidth + margin.left]);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([yExtent[0], yExtent[1]])
+      .range([innerHeight + margin.top, margin.top]);
+
+    const timeSeriesGroup = svg.append("g");
+
+    const xAxis = d3
+      .axisBottom(xScale)
+      .ticks(d3.timeMonth.every(1))
+      .tickFormat(d3.timeFormat("%b %Y"));
+
+    svg
+      .append("g")
+      .attr("transform", `translate(0,${innerHeight + margin.top})`)
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-45)");
+
+    svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(yScale))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -40)
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .style("font-size", "18px")
+      .text("Price");
+
+    timeSeriesGroup
+      .selectAll(".scatter-point")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("cx", (d) => xScale(parseDate(d[timeSeriesData.xAxis])))
+      .attr("cy", (d) => yScale(d[timeSeriesData.yAxis]))
+      .attr("r", 2)
+      .attr("fill", "steelblue")
+      .attr("opacity", 0.7)
+      .on("mouseover", function (event, d) {
+        d3.select(this).attr("r", 4).attr("opacity", 1);
+
+        timeSeriesGroup
+          .append("text")
+          .attr("id", "tooltip-text")
+          .attr("x", xScale(parseDate(d[timeSeriesData.xAxis])))
+          .attr("y", yScale(d[timeSeriesData.yAxis]) - 10)
+          .attr("font-size", "12px")
+          .attr("fill", "black")
+          .text(`${d.date}: $${d.high.toFixed(2)}`);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("r", 2).attr("opacity", 0.7);
         d3.select("#tooltip-text").remove();
       });
   }

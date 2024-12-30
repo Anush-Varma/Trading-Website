@@ -41,7 +41,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 500px;
-  width: 1400px;
+  width: 1500px;
 }
 
 .left-graph {
