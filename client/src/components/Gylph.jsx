@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
-import { use } from "react";
 
 function Gylph({ id, data }) {
   const circleRadius = 85;
