@@ -411,6 +411,34 @@ function Gylph({ id, data }) {
 
     const expandedGraphGroup = svg.append("g");
 
+    expandedGraphGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "url(#line-gradient)")
+      .attr("stroke-width", 2)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => xScale(d[indicatorSeclected.xAxis]))
+          .y((d) => yScale(d[indicatorSeclected.yAxis]))
+      );
+    const gradient = svg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", "line-gradient")
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", width)
+      .attr("y2", 0);
+
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "red");
+
+    gradient.append("stop").attr("offset", "100%").attr("stop-color", "green");
+
     svg
       .append("g")
       .attr("transform", `translate(0,${innerHeight + margin.top})`)
