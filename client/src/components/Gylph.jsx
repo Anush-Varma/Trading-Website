@@ -526,8 +526,13 @@ function Gylph({ id, data }) {
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
+    const yValues = [
+      ...data.map((d) => d[timeSeriesData.yAxis]),
+      ...data.map((d) => d[indicatorSeclected.xAxis]),
+      ...data.map((d) => d[indicatorSeclected.yAxis]),
+    ];
     const xExtent = d3.extent(data, (d) => parseDate(d[timeSeriesData.xAxis]));
-    const yExtent = d3.extent(data, (d) => d[timeSeriesData.yAxis]);
+    const yExtent = d3.extent(yValues);
     const xScale = d3
       .scaleTime()
       .domain(xExtent)
@@ -595,6 +600,36 @@ function Gylph({ id, data }) {
         d3.select(this).attr("r", 2).attr("opacity", 0.7);
         d3.select("#tooltip-text").remove();
       });
+
+    timeSeriesGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 2)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => xScale(parseDate(d[timeSeriesData.xAxis])))
+          .y((d) => yScale(d[indicatorSeclected.xAxis]))
+      );
+
+    timeSeriesGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 2)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => xScale(parseDate(d[timeSeriesData.xAxis])))
+          .y((d) => yScale(d[indicatorSeclected.yAxis]))
+      );
   }
 
   if (!data || data.length === 0) {
