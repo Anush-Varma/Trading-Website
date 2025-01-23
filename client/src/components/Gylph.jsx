@@ -605,7 +605,7 @@ function Gylph({ id, data }) {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "red")
+      .attr("stroke", "#E07A1F")
       .attr("stroke-width", 2)
       .attr(
         "d",
@@ -620,7 +620,7 @@ function Gylph({ id, data }) {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "red")
+      .attr("stroke", "#1F85E0")
       .attr("stroke-width", 2)
       .attr(
         "d",
