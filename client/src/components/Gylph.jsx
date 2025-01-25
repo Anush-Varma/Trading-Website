@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import "../styles/gylph.css";
+import { use } from "react";
 
 function Gylph({ id, data }) {
   const circleRadius = 85;
@@ -12,6 +13,10 @@ function Gylph({ id, data }) {
   const svgRef = useRef();
   const expandedPlot = useRef(null);
   const expandedPlot2 = useRef(null);
+  const timeSeriesScaleRef = useRef({
+    xScale: null,
+    parseDate: d3.timeParse("%Y-%m-%d"),
+  });
 
   const [indicatorSeclected, setIndicatorSelected] = useState({
     xAxis: "SMA10",
@@ -21,6 +26,8 @@ function Gylph({ id, data }) {
     xAxis: "date",
     yAxis: "close",
   });
+
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [outerRadii, setOuterRadii] = useState([
@@ -250,6 +257,27 @@ function Gylph({ id, data }) {
     }
   }, [isExpanded, data, timeSeriesData]);
 
+  useEffect(() => {
+    if (!isExpanded || hoveredIndex === null) return;
+
+    const verticalLine = d3
+      .select(expandedPlot2.current)
+      .select(".vertical-line");
+
+    if (hoveredIndex !== null && timeSeriesScaleRef.current.xScale) {
+      const hoveredData = data[hoveredIndex];
+      const xPos = timeSeriesScaleRef.current.xScale(
+        timeSeriesScaleRef.current.parseDate(hoveredData[timeSeriesData.xAxis])
+      );
+
+      verticalLine
+        .style("display", null)
+        .attr("transform", `translate(${xPos}, 0)`);
+    } else {
+      verticalLine.style("display", "none");
+    }
+  }, [hoveredIndex, isExpanded, data, timeSeriesData.xAxis]);
+
   function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
     const arcButton = d3
       .arc()
@@ -464,20 +492,6 @@ function Gylph({ id, data }) {
       .style("font-size", "18px")
       .text(`${indicatorSeclected.yAxis}`);
 
-    // expandedGraphGroup
-    //   .append("path")
-    //   .datum(data)
-    //   .attr("fill", "none")
-    //   .attr("stroke", componentColour)
-    //   .attr("stroke-width", 1)
-    //   .attr(
-    //     "d",
-    //     d3
-    //       .line()
-    //       .x((d) => xScale(d[indicatorSeclected.xAxis]))
-    //       .y((d) => yScale(d[indicatorSeclected.yAxis]))
-    //   );
-
     expandedGraphGroup
       .selectAll(".scatter-point")
       .data(data)
@@ -492,6 +506,7 @@ function Gylph({ id, data }) {
       .on("mouseover", function (event, d) {
         // NEEED event DO NOT REMOVE!!!!!
         d3.select(this).attr("r", 4).attr("opacity", 1);
+        setHoveredIndex(data.indexOf(d));
 
         expandedGraphGroup
           .append("text")
@@ -508,7 +523,7 @@ function Gylph({ id, data }) {
       })
       .on("mouseout", function () {
         d3.select(this).attr("r", 2).attr("opacity", 0.7);
-
+        setHoveredIndex(null);
         d3.select("#tooltip-text").remove();
       });
   }
@@ -537,6 +552,8 @@ function Gylph({ id, data }) {
       .scaleTime()
       .domain(xExtent)
       .range([margin.left, innerWidth + margin.left]);
+
+    timeSeriesScaleRef.current.xScale = xScale;
 
     const yScale = d3
       .scaleLinear()
@@ -630,6 +647,45 @@ function Gylph({ id, data }) {
           .x((d) => xScale(parseDate(d[timeSeriesData.xAxis])))
           .y((d) => yScale(d[indicatorSeclected.yAxis]))
       );
+
+    const verticalLine = timeSeriesGroup
+      .append("g")
+      .attr("class", "vertical-line")
+      .style("display", "none");
+
+    verticalLine
+      .append("line")
+      .attr("stroke", "#666")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "3,3")
+      .attr("y1", margin.top)
+      .attr("y2", innerHeight + margin.top);
+
+    const legend = timeSeriesGroup
+      .append("g")
+      .attr("class", "legend")
+      .attr("transform", `translate(${margin.left + 10}, ${margin.top + 10})`);
+
+    const legendItems = [
+      { color: "#E07A1F", text: indicatorSeclected.xAxis },
+      { color: "#1F85E0", text: indicatorSeclected.yAxis },
+    ];
+
+    legendItems.forEach((item, i) => {
+      legend
+        .append("circle")
+        .attr("cx", 0)
+        .attr("cy", i * 20)
+        .attr("r", 5)
+        .attr("fill", item.color);
+
+      legend
+        .append("text")
+        .attr("x", 10)
+        .attr("y", i * 20 + 5)
+        .text(item.text)
+        .attr("font-size", "12px");
+    });
   }
 
   if (!data || data.length === 0) {
