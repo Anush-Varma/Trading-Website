@@ -445,10 +445,8 @@ function Gylph({ id, data }) {
     const tooltip = d3
       .select(ref.current)
       .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0)
-      .style("position", "absolute")
-      .style("pointer-events", "none");
+      .attr("class", "expanded-tooltip")
+      .style("opacity", 0);
 
     expandedGraphGroup
       .append("path")
@@ -521,14 +519,11 @@ function Gylph({ id, data }) {
 
         tooltip.transition().duration(200).style("opacity", 1);
 
-        tooltip
-          .html(
-            `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
-              indicatorSeclected.yAxis
-            ].toFixed(2)})`
-          )
-          .style("left", event.pageX + 10 + "px")
-          .style("top", event.pageY - 28 + "px");
+        tooltip.html(
+          `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
+            indicatorSeclected.yAxis
+          ].toFixed(2)})`
+        );
       })
       .on("mouseout", function () {
         d3.select(this).attr("r", 3).attr("opacity", 0.7);

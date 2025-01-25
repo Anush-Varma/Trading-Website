@@ -64,3 +64,16 @@
   z-index: 1;
   pointer-events: none;
 }
+
+.expanded-tooltip {
+  position: fixed;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 100;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
