@@ -10,6 +10,9 @@ function Gylph({ id, data }) {
   const initialRadius = 40;
   const clickedRadius = 30;
 
+  const indicatorXColour = "#E07A1F";
+  const indicatorYColour = "#1FE07A";
+
   const svgRef = useRef();
   const expandedPlot = useRef(null);
   const expandedPlot2 = useRef(null);
@@ -439,6 +442,14 @@ function Gylph({ id, data }) {
 
     const expandedGraphGroup = svg.append("g");
 
+    const tooltip = d3
+      .select(ref.current)
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("pointer-events", "none");
+
     expandedGraphGroup
       .append("path")
       .datum(data)
@@ -500,31 +511,30 @@ function Gylph({ id, data }) {
       .attr("class", "scatter-point")
       .attr("cx", (d) => xScale(d[indicatorSeclected.xAxis]))
       .attr("cy", (d) => yScale(d[indicatorSeclected.yAxis]))
-      .attr("r", 2)
+      .attr("r", 3)
       .attr("fill", (d, i) => colourScale(i))
       .attr("opacity", 0.7)
       .on("mouseover", function (event, d) {
         // NEEED event DO NOT REMOVE!!!!!
-        d3.select(this).attr("r", 4).attr("opacity", 1);
+        d3.select(this).attr("r", 5).attr("opacity", 1);
         setHoveredIndex(data.indexOf(d));
 
-        expandedGraphGroup
-          .append("text")
-          .attr("id", "tooltip-text")
-          .attr("x", xScale(d[indicatorSeclected.xAxis]))
-          .attr("y", yScale(d[indicatorSeclected.yAxis]))
-          .attr("font-size", "12px")
-          .attr("fill", "black")
-          .text(
+        tooltip.transition().duration(200).style("opacity", 1);
+
+        tooltip
+          .html(
             `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
               indicatorSeclected.yAxis
             ].toFixed(2)})`
-          );
+          )
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
       })
       .on("mouseout", function () {
-        d3.select(this).attr("r", 2).attr("opacity", 0.7);
+        d3.select(this).attr("r", 3).attr("opacity", 0.7);
         setHoveredIndex(null);
-        d3.select("#tooltip-text").remove();
+
+        tooltip.transition().duration(500).style("opacity", 0);
       });
   }
 
@@ -598,23 +608,24 @@ function Gylph({ id, data }) {
       .attr("class", "dot")
       .attr("cx", (d) => xScale(parseDate(d[timeSeriesData.xAxis])))
       .attr("cy", (d) => yScale(d[timeSeriesData.yAxis]))
-      .attr("r", 2)
+      .attr("r", 3)
       .attr("fill", "steelblue")
       .attr("opacity", 0.7)
+      .style("pointer-events", "all")
       .on("mouseover", function (event, d) {
-        d3.select(this).attr("r", 4).attr("opacity", 1);
-
+        // NEEED event DO NOT REMOVE!!!!!
+        d3.select(this).attr("r", 4).attr("opacity", 1).raise();
         timeSeriesGroup
           .append("text")
           .attr("id", "tooltip-text")
           .attr("x", xScale(parseDate(d[timeSeriesData.xAxis])))
           .attr("y", yScale(d[timeSeriesData.yAxis]) - 10)
           .attr("font-size", "12px")
-          .attr("fill", "black")
+          .attr("fill", "#7A1FE0")
           .text(`${d.date}: $${d.high.toFixed(2)}`);
       })
       .on("mouseout", function () {
-        d3.select(this).attr("r", 2).attr("opacity", 0.7);
+        d3.select(this).attr("r", 3).attr("opacity", 0.7);
         d3.select("#tooltip-text").remove();
       });
 
@@ -622,7 +633,7 @@ function Gylph({ id, data }) {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#E07A1F")
+      .attr("stroke", indicatorXColour)
       .attr("stroke-width", 2)
       .attr(
         "d",
@@ -637,7 +648,7 @@ function Gylph({ id, data }) {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#1F85E0")
+      .attr("stroke", indicatorYColour)
       .attr("stroke-width", 2)
       .attr(
         "d",
@@ -656,8 +667,7 @@ function Gylph({ id, data }) {
     verticalLine
       .append("line")
       .attr("stroke", "#666")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "3,3")
+      .attr("stroke-width", 2)
       .attr("y1", margin.top)
       .attr("y2", innerHeight + margin.top);
 
@@ -667,8 +677,8 @@ function Gylph({ id, data }) {
       .attr("transform", `translate(${margin.left + 10}, ${margin.top + 10})`);
 
     const legendItems = [
-      { color: "#E07A1F", text: indicatorSeclected.xAxis },
-      { color: "#1F85E0", text: indicatorSeclected.yAxis },
+      { color: indicatorXColour, text: indicatorSeclected.xAxis },
+      { color: indicatorYColour, text: indicatorSeclected.yAxis },
     ];
 
     legendItems.forEach((item, i) => {
