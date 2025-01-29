@@ -21,6 +21,8 @@ function Gylph({ id, data }) {
     parseDate: d3.timeParse("%Y-%m-%d"),
   });
 
+  const [rsiValue, setRsiValue] = useState(null);
+
   const [indicatorSeclected, setIndicatorSelected] = useState({
     xAxis: "SMA10",
     yAxis: "SMA50",
@@ -84,6 +86,44 @@ function Gylph({ id, data }) {
   };
 
   useEffect(() => {
+    if (!svgRef.current || !data || data.length === 0) return;
+
+    const mainGroup = d3.select(svgRef.current).select("g").select("g");
+
+    mainGroup.selectAll(".rsi-arc").remove();
+    mainGroup.selectAll(".rsi-text").remove();
+
+    const rsiToAngle = d3
+      .scaleLinear()
+      .domain([0, 100])
+      .range([Math.PI / 2, 0]);
+
+    const endAngle = rsiValue ? rsiToAngle(rsiValue) : 0;
+
+    const rsiIndicator = d3
+      .arc()
+      .innerRadius(circleRadius)
+      .outerRadius(circleRadius + 15)
+      .startAngle(Math.PI / 2)
+      .endAngle(endAngle);
+
+    mainGroup
+      .append("path")
+      .attr("class", "rsi-arc")
+      .attr("d", rsiIndicator)
+      .attr(
+        "fill",
+        rsiValue
+          ? rsiValue >= 70 || rsiValue <= 30
+            ? "red"
+            : "green"
+          : componentColour
+      )
+      .attr("stroke", componentColour2)
+      .attr("stroke-width", 1);
+  }, [rsiValue, data, circleRadius, componentColour, componentColour2]);
+
+  useEffect(() => {
     if (!data || data.length === 0) return;
     d3.select(svgRef.current).selectAll("*").remove();
 
@@ -99,6 +139,11 @@ function Gylph({ id, data }) {
     // create a mainGroup layer and stack ontop each element
     const mainGroup = svg
       .append("g")
+      .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const tooltipGroup = svg
+      .append("g")
+      .attr("class", "tooltip-group")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
     // create circle glyph
@@ -129,7 +174,6 @@ function Gylph({ id, data }) {
         .append("path")
         .attr("d", arc)
         .attr("fill", componentColour)
-
         .attr("stroke", componentColour2)
         .attr("stroke-width", 1)
         .style("cursor", "pointer")
@@ -245,7 +289,7 @@ function Gylph({ id, data }) {
         .attr("y", endY + line.texty)
         .text(line.text);
     });
-    generateGlyphConnectedGraph(mainGroup);
+    generateGlyphConnectedGraph(mainGroup, tooltipGroup);
   }, [outerRadii, id, handleArcClick]);
 
   useEffect(() => {
@@ -293,7 +337,7 @@ function Gylph({ id, data }) {
     return arcButton;
   }
 
-  function generateGlyphConnectedGraph(mainGroup) {
+  function generateGlyphConnectedGraph(mainGroup, tooltipGroup) {
     const connectedGraphGroup = mainGroup.append("g");
 
     const graphRadius = circleRadius * 0.55;
@@ -354,8 +398,8 @@ function Gylph({ id, data }) {
       .on("mouseover", function (event, d) {
         // NEEED event DO NOT REMOVE!!!!!
         d3.select(this).attr("r", 5).attr("opacity", 1);
-
-        connectedGraphGroup
+        setRsiValue(d.RSI);
+        tooltipGroup
           .append("text")
           .attr("id", "tooltip-text")
           .attr("x", xScale(d[indicatorSeclected.xAxis]))
