@@ -29,7 +29,7 @@ function Card(props) {
     <div className="card">
       <h1 className="stock-symbol">{props.ticker}</h1>
       <Gylph className="gylph" id={props.index} data={props.stockData}></Gylph>
-      <Box className="time-slider">
+      {/* <Box className="time-slider">
         <Slider
           className="slider"
           value={value1}
@@ -39,7 +39,7 @@ function Card(props) {
           disableSwap
           color="rgb(13, 27, 42)"
         />
-      </Box>
+      </Box> */}
     </div>
   );
 }

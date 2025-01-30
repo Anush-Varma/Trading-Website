@@ -234,7 +234,7 @@ function Gylph({ id, data }) {
       {
         // 0% line data
         text: "0%",
-        textx: +45,
+        textx: +30,
         texty: +5,
         angle: 0,
         x1: -5 + circleRadius,
