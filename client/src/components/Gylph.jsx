@@ -95,8 +95,8 @@ function Gylph({ id, data }) {
 
     const rsiToAngle = d3
       .scaleLinear()
-      .domain([0, 100])
-      .range([Math.PI / 2, 0]);
+      .domain([100, 0])
+      .range([0, Math.PI / 2]);
 
     const endAngle = rsiValue ? rsiToAngle(rsiValue) : 0;
 
@@ -221,8 +221,8 @@ function Gylph({ id, data }) {
 
     const lineValues = [
       {
-        // 0% line data
-        text: "0%",
+        // 100% line data
+        text: "100%",
         textx: +20,
         texty: -5,
         angle: -Math.PI / 2,
@@ -232,8 +232,8 @@ function Gylph({ id, data }) {
         y2: circleRadius + 20,
       },
       {
-        // 100% line data
-        text: "100%",
+        // 0% line data
+        text: "0%",
         textx: +45,
         texty: +5,
         angle: 0,
@@ -243,8 +243,8 @@ function Gylph({ id, data }) {
         y2: circleRadius,
       },
       {
-        // 30% line data
-        text: "30%",
+        // 70% line data
+        text: "70%",
         textx: +30,
         texty: -5,
         angle: (-7 / 20) * Math.PI,
@@ -254,8 +254,8 @@ function Gylph({ id, data }) {
         y2: circleRadius + 20,
       },
       {
-        // 70% line data
-        text: "70%",
+        // 30% line data
+        text: "30%",
         textx: +35,
         texty: 0,
         angle: (-3 / 20) * Math.PI,
