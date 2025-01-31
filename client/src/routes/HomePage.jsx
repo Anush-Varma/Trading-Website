@@ -31,7 +31,6 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <Nav></Nav>
       <div className="cards-wrapper">
         <div className="cards">
           {currentStocks.map((ticker, index) => (

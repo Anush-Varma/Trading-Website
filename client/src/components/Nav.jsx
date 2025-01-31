@@ -2,19 +2,30 @@ import Button from "./Button";
 import SearchBar from "./SearchBar";
 
 import "../styles/nav.css";
+import { useNavigate } from "react-router-dom";
 
 function Nav() {
+  const navigate = useNavigate();
+
+  const handleTutorialClick = () => {
+    navigate("/Tutorial");
+  };
+
+  const handleHomeButtonClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="nav-bar">
       <div className="left">
-        <Button text="StockSage"></Button>
+        <Button text="StockSage" onClick={handleHomeButtonClick}></Button>
         <Button text="Watch List"></Button>
       </div>
       <div className="center-section">
         <SearchBar></SearchBar>
       </div>
       <div className="right">
-        <Button text="Tutorial"></Button>
+        <Button text="Tutorial" onClick={handleTutorialClick}></Button>
         <Button text="Sign Up"></Button>
         <Button text="Profile"></Button>
       </div>
