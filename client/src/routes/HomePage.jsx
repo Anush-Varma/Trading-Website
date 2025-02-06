@@ -1,4 +1,3 @@
-import Nav from "../components/Nav";
 import Card from "../components/Card";
 import "../styles/homePage.css";
 import axios from "axios";

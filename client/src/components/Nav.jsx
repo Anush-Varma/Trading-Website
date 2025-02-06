@@ -3,35 +3,56 @@ import SearchBar from "./SearchBar";
 
 import "../styles/nav.css";
 import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 function Nav() {
   const navigate = useNavigate();
+  const auth = getAuth();
 
   const handleTutorialClick = () => {
-    navigate("/Tutorial");
+    if (!auth.currentUser) {
+      alert("Please sign in or create an account to access the tutorial");
+      return;
+    } else {
+      navigate("/Tutorial");
+    }
   };
 
   const handleHomeButtonClick = () => {
     navigate("/");
   };
 
+  const handleSignInButtonClick = () => {
+    navigate("/SignIn");
+  };
+
+  const handleSignOutButtonClick = () => {
+    if (auth.currentUser) {
+      signOut(auth)
+        .then(() => {
+          alert("Signed Out");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      navigate("/SignIn");
+    }
+  };
+
   return (
     <div className="nav-bar">
       <div className="left">
         <Button text="StockSage" onClick={handleHomeButtonClick}></Button>
-        <Button text="Watch List"></Button>
+        <Button text="Tutorial" onClick={handleTutorialClick}></Button>
       </div>
       <div className="center-section">
         <SearchBar></SearchBar>
       </div>
       <div className="right">
-        <Button text="Tutorial" onClick={handleTutorialClick}></Button>
-        <Button text="Sign Up"></Button>
-        <Button text="Profile"></Button>
+        <Button text="Sign In" onClick={handleSignInButtonClick}></Button>
+        <Button text="Sign Out" onClick={handleSignOutButtonClick}></Button>
       </div>
-      {/* Have card like components where the cards can expand and 
-      shrink depending on if gylph is clicked and expand with larger graphs
-        */}
     </div>
   );
 }

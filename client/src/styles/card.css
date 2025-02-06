@@ -32,21 +32,3 @@
   margin: 0;
   position: relative;
 }
-
-.time-slider {
-  display: flex;
-
-  width: 250px;
-}
-
-.MuiSlider-rail {
-  background-color: rgba(13, 27, 42, 0.3) !important;
-}
-
-.MuiSlider-track {
-  background-color: var(--bg-colour2) !important;
-}
-
-.MuiSlider-thumb {
-  background-color: var(--bg-colour2) !important;
-}

@@ -650,23 +650,23 @@ function Gylph({ id, data }) {
       .attr("r", 3)
       .attr("fill", "steelblue")
       .attr("opacity", 0.7)
-      .style("pointer-events", "all")
-      .on("mouseover", function (event, d) {
-        // NEEED event DO NOT REMOVE!!!!!
-        d3.select(this).attr("r", 4).attr("opacity", 1).raise();
-        timeSeriesGroup
-          .append("text")
-          .attr("id", "tooltip-text")
-          .attr("x", xScale(parseDate(d[timeSeriesData.xAxis])))
-          .attr("y", yScale(d[timeSeriesData.yAxis]) - 10)
-          .attr("font-size", "12px")
-          .attr("fill", "#7A1FE0")
-          .text(`${d.date}: $${d.high.toFixed(2)}`);
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("r", 3).attr("opacity", 0.7);
-        d3.select("#tooltip-text").remove();
-      });
+      .style("pointer-events", "all");
+    // .on("mouseover", function (event, d) {
+    //   // NEEED event DO NOT REMOVE!!!!!
+    //   d3.select(this).attr("r", 4).attr("opacity", 1).raise();
+    //   timeSeriesGroup
+    //     .append("text")
+    //     .attr("id", "tooltip-text")
+    //     .attr("x", xScale(parseDate(d[timeSeriesData.xAxis])))
+    //     .attr("y", yScale(d[timeSeriesData.yAxis]) - 10)
+    //     .attr("font-size", "12px")
+    //     .attr("fill", "#7A1FE0")
+    //     .text(`${d.date}: $${d.high.toFixed(2)}`);
+    // })
+    // .on("mouseout", function () {
+    //   d3.select(this).attr("r", 3).attr("opacity", 0.7);
+    //   d3.select("#tooltip-text").remove();
+    // });
 
     timeSeriesGroup
       .append("path")

@@ -1,0 +1,17 @@
+.search-input {
+  border: none;
+  border-bottom: 2px solid var(--component-colour3);
+  background-color: transparent;
+  color: var(--component-colour3);
+  font-size: 20px;
+  text-align: center;
+  padding: 5px;
+  outline: none;
+  width: 100%;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.search-input::placeholder {
+  color: var(--component-colour3);
+}

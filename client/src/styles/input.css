@@ -1,0 +1,19 @@
+.input {
+  border: none;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--component-colour2);
+  width: 300px;
+  box-shadow: 20px 20px 60px var(--bg-colour1),
+    -20px -20px 60px var(--bg-colour2);
+  transition: 0.3s;
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline-color: #e8e8e8;
+  background: var(--component-colour2);
+  box-shadow: inset 20px 20px 60px var(--bg-colour1),
+    inset -20px -20px 60px var(--bg-colour2);
+  transition: 0.3s;
+}

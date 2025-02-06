@@ -3,9 +3,9 @@
   border-bottom: 2px solid var(--component-colour3);
   background-color: transparent;
   color: var(--component-colour3);
-  font-size: 20px;
+  font-size: 25px;
   text-align: center;
-  padding: 5px;
+  padding: 1rem;
   outline: none;
   width: 50%;
 }

@@ -1,0 +1,42 @@
+.signInCard {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: var(--component-colour);
+  border-radius: 20px;
+  width: 500px;
+  box-shadow: 0 5px 8px var(--shadow-colour);
+}
+
+.signInWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.signInHeader {
+  padding: 1rem;
+}
+
+.signInForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.signIn-form-group {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.signInButton {
+  display: flex;
+  justify-content: center;
+  justify-content: center;
+  padding: 1rem;
+}

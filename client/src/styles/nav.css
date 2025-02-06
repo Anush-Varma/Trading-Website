@@ -2,15 +2,54 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 100%;
 }
 
 .nav:left,
 nav:right {
   display: flex;
-  gap: 15px;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .center-section {
   flex-grow: 1;
+  min-width: 200px;
+  max-width: 300px;
+  margin: 0 1rem;
   text-align: center;
+}
+
+@media screen and (max-width: 968px) {
+  .nav-bar {
+    justify-content: center;
+  }
+
+  .center-section {
+    order: -1;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .left,
+  .right {
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .left,
+  .right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .button {
+    width: 100%;
+    max-width: 200px;
+  }
 }
