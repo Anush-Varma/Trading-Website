@@ -9,20 +9,17 @@ function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const stocksPerPage = 30;
 
+  const dataPath = "/data/stocks_30.json";
+
   useEffect(() => {
     const fetchStockTickers = async () => {
-      const response = await axios.get("/data/stocks_30.json");
+      const response = await axios.get(dataPath);
       const tickers = Object.keys(response.data);
       setStockTickers(tickers);
       setStockData(response.data);
     };
     fetchStockTickers();
   }, []);
-
-  const getStockData = async (ticker) => {
-    const response = await axios.get(`/data/stocks_30.json`);
-    return response.data[ticker];
-  };
 
   const indexOfLastStock = currentPage * stocksPerPage;
   const indexOfFirstStock = indexOfLastStock - stocksPerPage;

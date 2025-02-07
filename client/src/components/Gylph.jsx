@@ -69,13 +69,13 @@ function Gylph({ id, data }) {
       case 3:
         setIndicatorSelected({
           xAxis: "MACD",
-          yAxis: "EMA10",
+          yAxis: "Signal Line",
         });
         break;
       case 4:
         setIndicatorSelected({
-          xAxis: "percentK",
-          yAxis: "percentD",
+          xAxis: "LBB",
+          yAxis: "UBB",
         });
         break;
     }
@@ -157,7 +157,7 @@ function Gylph({ id, data }) {
       { startAngle: 5.3, endAngle: 4.7, label: "SMA 50 / 100" },
       { startAngle: 4, endAngle: 4.6, label: "EMA 10 / 50" },
       { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
-      { startAngle: 2.5, endAngle: 2.9, label: "%k / %d" },
+      { startAngle: 2.5, endAngle: 3.0, label: "LBB / UBB" },
     ];
 
     // add buttons to glyph with text
@@ -590,11 +590,18 @@ function Gylph({ id, data }) {
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    const yValues = [
-      ...data.map((d) => d[timeSeriesData.yAxis]),
-      ...data.map((d) => d[indicatorSeclected.xAxis]),
-      ...data.map((d) => d[indicatorSeclected.yAxis]),
-    ];
+    const yValues =
+      indicatorSeclected.xAxis === "MACD"
+        ? [
+            ...data.map((d) => d[indicatorSeclected.xAxis]),
+            ...data.map((d) => d[indicatorSeclected.yAxis]),
+          ]
+        : [
+            ...data.map((d) => d[timeSeriesData.yAxis]),
+            ...data.map((d) => d[indicatorSeclected.xAxis]),
+            ...data.map((d) => d[indicatorSeclected.yAxis]),
+          ];
+
     const xExtent = d3.extent(data, (d) => parseDate(d[timeSeriesData.xAxis]));
     const yExtent = d3.extent(yValues);
     const xScale = d3
@@ -639,34 +646,20 @@ function Gylph({ id, data }) {
       .style("font-size", "18px")
       .text("Price");
 
-    timeSeriesGroup
-      .selectAll(".scatter-point")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "dot")
-      .attr("cx", (d) => xScale(parseDate(d[timeSeriesData.xAxis])))
-      .attr("cy", (d) => yScale(d[timeSeriesData.yAxis]))
-      .attr("r", 3)
-      .attr("fill", "steelblue")
-      .attr("opacity", 0.7)
-      .style("pointer-events", "all");
-    // .on("mouseover", function (event, d) {
-    //   // NEEED event DO NOT REMOVE!!!!!
-    //   d3.select(this).attr("r", 4).attr("opacity", 1).raise();
-    //   timeSeriesGroup
-    //     .append("text")
-    //     .attr("id", "tooltip-text")
-    //     .attr("x", xScale(parseDate(d[timeSeriesData.xAxis])))
-    //     .attr("y", yScale(d[timeSeriesData.yAxis]) - 10)
-    //     .attr("font-size", "12px")
-    //     .attr("fill", "#7A1FE0")
-    //     .text(`${d.date}: $${d.high.toFixed(2)}`);
-    // })
-    // .on("mouseout", function () {
-    //   d3.select(this).attr("r", 3).attr("opacity", 0.7);
-    //   d3.select("#tooltip-text").remove();
-    // });
+    if (indicatorSeclected.xAxis !== "MACD") {
+      timeSeriesGroup
+        .selectAll(".scatter-point")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("cx", (d) => xScale(parseDate(d[timeSeriesData.xAxis])))
+        .attr("cy", (d) => yScale(d[timeSeriesData.yAxis]))
+        .attr("r", 3)
+        .attr("fill", "steelblue")
+        .attr("opacity", 0.7)
+        .style("pointer-events", "all");
+    }
 
     timeSeriesGroup
       .append("path")
