@@ -3,10 +3,9 @@ import Button from "../components/Button";
 import styles from "../styles/tutorial.module.css";
 import axios from "axios";
 import TimeSeriesPlot from "../components/TimeSeriesPlot";
-import Gylph from "../components/Gylph";
+import Card from "../components/Card";
 import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
 import { useEffect, useState } from "react";
-import * as d3 from "d3";
 
 function Tutorial() {
   const [stockTickers, setStockTickers] = useState([]);
@@ -75,9 +74,13 @@ function Tutorial() {
         </div>
       </div>
       <div className={styles.example}>
-        <div className={styles.GlyphGraph}>
+        <div>
           {selectedStock && stockData[selectedStock] && (
-            <Gylph data={stockData[selectedStock]} />
+            <Card
+              ticker={selectedStock}
+              stockData={stockData[selectedStock]}
+              index={0}
+            />
           )}
         </div>
         <div className={styles.rightText}>
