@@ -1,45 +1,12 @@
-import { Box } from "@mui/material";
 import * as React from "react";
 import "../styles/card.css";
 import Gylph from "./Gylph";
-import Slider from "@mui/material/Slider";
-
-function valuetext(value) {
-  return `${value}`;
-}
-
-const minDistance = 10;
 
 function Card(props) {
-  const [value1, setValue1] = React.useState([20, 37]);
-
-  const timeSlider = (event, newValue, activeThumb) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-
-    if (activeThumb === 0) {
-      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
-    } else {
-      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
-    }
-  };
-
   return (
     <div className="card">
       <h1 className="stock-symbol">{props.ticker}</h1>
       <Gylph className="gylph" id={props.index} data={props.stockData}></Gylph>
-      {/* <Box className="time-slider">
-        <Slider
-          className="slider"
-          value={value1}
-          onChange={timeSlider}
-          valueLabelDisplay="auto"
-          getAriaValueText={valuetext}
-          disableSwap
-          color="rgb(13, 27, 42)"
-        />
-      </Box> */}
     </div>
   );
 }

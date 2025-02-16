@@ -10,8 +10,8 @@ function Gylph({ id, data }) {
   const initialRadius = 40;
   const clickedRadius = 30;
 
-  const indicatorXColour = "#E07A1F";
-  const indicatorYColour = "#1FE07A";
+  const indicatorXColour = "#ca0020";
+  const indicatorYColour = "#f4a582";
 
   const svgRef = useRef();
   const expandedPlot = useRef(null);
@@ -74,8 +74,8 @@ function Gylph({ id, data }) {
         break;
       case 4:
         setIndicatorSelected({
-          xAxis: "LBB",
-          yAxis: "UBB",
+          xAxis: "UBB",
+          yAxis: "LBB",
         });
         break;
     }
@@ -358,17 +358,34 @@ function Gylph({ id, data }) {
       .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
       .range([graphRadius, -graphRadius]);
 
-    const colourScale = d3
-      .scaleLinear()
-      .domain([0, data.length - 1])
-      .range(["red", "green"]);
+    const customColours = [
+      "#ffffcc",
+      "#ffeda0",
+      "#fed976",
+      "#feb24c",
+      "#fd8d3c",
+      "#fc4e2a",
+      "#e31a1c",
+      "#bd0026",
+      "#800026",
+    ];
 
-    connectedGraphGroup
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", componentColour)
-      .attr("stroke-width", 1);
+    const colourScale = d3
+      .scaleQuantize()
+      .domain([0, data.length - 1])
+      .range(customColours);
+
+    // const colourScale = d3
+    //   .scaleLinear()
+    //   .domain([0, data.length - 1])
+    //   .range(["red", "green"]);
+
+    // connectedGraphGroup
+    //   .append("path")
+    //   .datum(data)
+    //   .attr("fill", "none")
+    //   .attr("stroke", componentColour)
+    //   .attr("stroke-width", 1);
 
     connectedGraphGroup
       .attr("class", "connected-graph")
@@ -404,8 +421,8 @@ function Gylph({ id, data }) {
           .attr("id", "tooltip-text")
           .attr("x", xScale(d[indicatorSeclected.xAxis]))
           .attr("y", yScale(d[indicatorSeclected.yAxis]))
-          .attr("font-size", "12px")
-          .attr("fill", "yellow")
+          .attr("font-size", "13px")
+          .attr("fill", "rgb(156, 248, 255)")
           .text(
             `(${d[indicatorSeclected.xAxis].toFixed(2)}, ${d[
               indicatorSeclected.yAxis
@@ -479,10 +496,27 @@ function Gylph({ id, data }) {
       .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
       .range([innerHeight + margin.top, margin.top]);
 
+    const customColours = [
+      "#ffffcc",
+      "#ffeda0",
+      "#fed976",
+      "#feb24c",
+      "#fd8d3c",
+      "#fc4e2a",
+      "#e31a1c",
+      "#bd0026",
+      "#800026",
+    ];
+
     const colourScale = d3
-      .scaleLinear()
+      .scaleQuantize()
       .domain([0, data.length - 1])
-      .range(["red", "green"]);
+      .range(customColours);
+
+    // const colourScale = d3
+    //   .scaleLinear()
+    //   .domain([0, data.length - 1])
+    //   .range(["red", "green"]);
 
     const expandedGraphGroup = svg.append("g");
 
@@ -492,20 +526,20 @@ function Gylph({ id, data }) {
       .attr("class", "expanded-tooltip")
       .style("opacity", 0);
 
-    expandedGraphGroup
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "url(#line-gradient)")
-      .attr("stroke-width", 2)
-      .attr(
-        "d",
-        d3
-          .line()
-          .curve(d3.curveBasis)
-          .x((d) => xScale(d[indicatorSeclected.xAxis]))
-          .y((d) => yScale(d[indicatorSeclected.yAxis]))
-      );
+    // expandedGraphGroup
+    //   .append("path")
+    //   .datum(data)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "url(#line-gradient)")
+    //   .attr("stroke-width", 2)
+    //   .attr(
+    //     "d",
+    //     d3
+    //       .line()
+    //       .curve(d3.curveBasis)
+    //       .x((d) => xScale(d[indicatorSeclected.xAxis]))
+    //       .y((d) => yScale(d[indicatorSeclected.yAxis]))
+    //   );
     const gradient = svg
       .append("defs")
       .append("linearGradient")
@@ -575,6 +609,44 @@ function Gylph({ id, data }) {
 
         tooltip.transition().duration(500).style("opacity", 0);
       });
+
+    const triangleSize = 8;
+    const trianglePoints = (x, y, size) => {
+      return `${x},${y - size} ${x - size},${y + size} ${x + size},${y + size}`;
+    };
+
+    // First point triangle (pointing up)
+    expandedGraphGroup
+      .append("polygon")
+      .attr("points", () =>
+        trianglePoints(
+          xScale(data[0][indicatorSeclected.xAxis]),
+          yScale(data[0][indicatorSeclected.yAxis]),
+          triangleSize
+        )
+      )
+      .attr("fill", colourScale(0))
+      .attr("opacity", 0.9);
+
+    // Last point triangle (pointing down)
+    expandedGraphGroup
+      .append("polygon")
+      .attr("points", () =>
+        trianglePoints(
+          xScale(data[data.length - 1][indicatorSeclected.xAxis]),
+          yScale(data[data.length - 1][indicatorSeclected.yAxis]) +
+            2 * triangleSize,
+          triangleSize
+        )
+      )
+      .attr("fill", colourScale(data.length - 1))
+      .attr("opacity", 0.9)
+      .attr(
+        "transform",
+        `rotate(180 ${xScale(
+          data[data.length - 1][indicatorSeclected.xAxis]
+        )} ${yScale(data[data.length - 1][indicatorSeclected.yAxis])})`
+      );
   }
 
   function generateExpandedTimeGraph(ref, width, height) {
@@ -656,7 +728,7 @@ function Gylph({ id, data }) {
         .attr("cx", (d) => xScale(parseDate(d[timeSeriesData.xAxis])))
         .attr("cy", (d) => yScale(d[timeSeriesData.yAxis]))
         .attr("r", 3)
-        .attr("fill", "steelblue")
+        .attr("fill", "rgb(255,255,191)")
         .attr("opacity", 0.7)
         .style("pointer-events", "all");
     }
@@ -666,7 +738,7 @@ function Gylph({ id, data }) {
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", indicatorXColour)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", 3)
       .attr(
         "d",
         d3
@@ -681,7 +753,7 @@ function Gylph({ id, data }) {
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", indicatorYColour)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", 3)
       .attr(
         "d",
         d3
@@ -698,7 +770,7 @@ function Gylph({ id, data }) {
 
     verticalLine
       .append("line")
-      .attr("stroke", "#666")
+      .attr("stroke", "black")
       .attr("stroke-width", 2)
       .attr("y1", margin.top)
       .attr("y2", innerHeight + margin.top);

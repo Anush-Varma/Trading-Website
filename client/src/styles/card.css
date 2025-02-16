@@ -7,8 +7,8 @@
   padding: 10px;
   background-color: var(--component-colour);
   border-radius: 20px;
-  width: 340px;
-  height: 340px;
+  width: 330px;
+  height: 330px;
   box-shadow: 0 5px 8px var(--shadow-colour);
 }
 .card::before {
