@@ -39,7 +39,7 @@ function TimeSeriesPlot({ data, ticker }) {
       .curve(d3.curveBasis);
 
     // Add the line path
-    svg
+    const path = svg
       .append("path")
       .datum(data)
       .attr("fill", "none")
@@ -47,17 +47,32 @@ function TimeSeriesPlot({ data, ticker }) {
       .attr("stroke-width", 2)
       .attr("d", line);
 
+    const totalLength = path.node().getTotalLength();
+
+    path
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+      .duration(2000)
+      .delay(1000) // Start after points appear
+      .attr("stroke-dashoffset", 0);
+
     // Add scatter points
-    svg
-      .selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", (d) => xScale(parseDate(d.date)))
-      .attr("cy", (d) => yScale(d.close))
-      .attr("r", 3)
-      .attr("fill", "black")
-      .attr("opacity", 0.7);
+    // svg
+    //   .selectAll("circle")
+    //   .data(data)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("cx", (d) => xScale(parseDate(d.date)))
+    //   .attr("cy", (d) => yScale(d.close))
+    //   .attr("r", 3)
+    //   .attr("fill", "black")
+    //   .attr("opacity", 0)
+    //   .transition()
+    //   .duration(1000)
+    //   .delay((d, i) => i * 10)
+    //   .attr("cy", (d) => yScale(d.close))
+    //   .attr("opacity", 0.7);
 
     // Add X axis
     svg

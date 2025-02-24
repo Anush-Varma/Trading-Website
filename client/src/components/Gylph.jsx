@@ -7,11 +7,11 @@ function Gylph({ id, data }) {
   const circleRadius = 85;
   const componentColour = "rgb(13, 27, 42)";
   const componentColour2 = "rgb(119, 141, 169)";
-  const initialRadius = 40;
-  const clickedRadius = 30;
 
   const indicatorXColour = "#ca0020";
   const indicatorYColour = "#f4a582";
+  const rsiStartAngle = (5 * Math.PI) / 4;
+  const rsiEndAngle = (3 * Math.PI) / 4;
 
   const svgRef = useRef();
   const expandedPlot = useRef(null);
@@ -27,6 +27,9 @@ function Gylph({ id, data }) {
     xAxis: "SMA10",
     yAxis: "SMA50",
   });
+
+  const [selectedTShapeButton, setSelectedTShapeButton] = useState(null);
+
   const [timeSeriesData, setTimeSeriesData] = useState({
     xAxis: "date",
     yAxis: "close",
@@ -35,18 +38,8 @@ function Gylph({ id, data }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const [outerRadii, setOuterRadii] = useState([
-    clickedRadius,
-    initialRadius,
-    initialRadius,
-    initialRadius,
-    initialRadius,
-  ]);
 
   const handleArcClick = useCallback((index) => {
-    setOuterRadii((prevRadii) =>
-      prevRadii.map((_, i) => (i === index ? clickedRadius : initialRadius))
-    );
     switch (index) {
       case 0:
         setIndicatorSelected({
@@ -78,6 +71,8 @@ function Gylph({ id, data }) {
           yAxis: "LBB",
         });
         break;
+      default:
+        break;
     }
   }, []);
 
@@ -96,7 +91,7 @@ function Gylph({ id, data }) {
     const rsiToAngle = d3
       .scaleLinear()
       .domain([100, 0])
-      .range([0, Math.PI / 2]);
+      .range([rsiStartAngle, rsiEndAngle]);
 
     const endAngle = rsiValue ? rsiToAngle(rsiValue) : 0;
 
@@ -104,7 +99,7 @@ function Gylph({ id, data }) {
       .arc()
       .innerRadius(circleRadius)
       .outerRadius(circleRadius + 15)
-      .startAngle(Math.PI / 2)
+      .startAngle(rsiStartAngle)
       .endAngle(endAngle);
 
     mainGroup
@@ -147,72 +142,163 @@ function Gylph({ id, data }) {
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
     // create circle glyph
-    mainGroup
-      .append("circle")
-      .attr("r", circleRadius)
-      .attr("fill", "rgb(119, 141, 169)");
 
-    const arcsData = [
-      { startAngle: 6, endAngle: 5.4, label: "SMA 10 / 50" },
-      { startAngle: 5.3, endAngle: 4.7, label: "SMA 50 / 100" },
-      { startAngle: 4, endAngle: 4.6, label: "EMA 10 / 50" },
-      { startAngle: 3.5, endAngle: 3.9, label: "MACD" },
-      { startAngle: 2.5, endAngle: 3.0, label: "LBB / UBB" },
-    ];
+    const pi = Math.PI;
+    // const arcsData = [
+    //   {
+    //     startAngle: (3 * pi) / 2, // 3pi/2
+    //     endAngle: (17 * pi) / 10, // 17pi/10
+    //     label: "SMA 10 / 50",
+    //   },
+    //   {
+    //     startAngle: (3 * pi) / 2 + pi / 5, // 17pi/10
+    //     endAngle: (3 * pi) / 2 + 2 * (pi / 5), //  19pi/10
+    //     label: "SMA 50 / 100",
+    //   },
+    //   {
+    //     startAngle: (3 * pi) / 2 + 2 * (pi / 5), // 19pi/10
+    //     endAngle: (3 * pi) / 2 + 3 * (pi / 5), // 21pi/10
+    //     label: "EMA 10 / 50",
+    //   },
+    //   {
+    //     startAngle: (3 * pi) / 2 + 3 * (pi / 5), // 21pi/10
+    //     endAngle: (3 * pi) / 2 + 4 * (pi / 5), // 23pi/10
+    //     label: "MACD",
+    //   },
+    //   {
+    //     startAngle: (3 * pi) / 2 + 4 * (pi / 5), // 23pi/10
+    //     endAngle: (3 * pi) / 2 + 5 * (pi / 5), // 25pi/10
+    //     label: "LBB / UBB",
+    //   },
+    // ];
 
     // add buttons to glyph with text
 
-    arcsData.forEach((arcsData, index) => {
-      const arc = generateButton(
-        5,
-        arcsData.startAngle,
-        arcsData.endAngle,
-        outerRadii[index]
-      );
+    // arcsData.forEach((arcsData, index) => {
+    //   const arc = generateButton(
+    //     5,
+    //     arcsData.startAngle,
+    //     arcsData.endAngle,
+    //     outerRadii[index]
+    //   );
 
-      mainGroup
-        .append("path")
-        .attr("d", arc)
+    //   mainGroup
+    //     .append("path")
+    //     .attr("d", arc)
+    //     .attr("fill", componentColour)
+    //     .attr("stroke", componentColour2)
+    //     .attr("stroke-width", 2)
+    //     .style("cursor", "pointer")
+    //     .on("click", () => handleArcClick(index));
+
+    //   const textArc = d3
+    //     .arc()
+    //     .innerRadius(circleRadius + outerRadii[index] + 10)
+    //     .outerRadius(circleRadius + outerRadii[index] + 10)
+    //     .endAngle(arcsData.startAngle)
+    //     .startAngle(arcsData.endAngle);
+
+    //   mainGroup
+    //     .append("path")
+    //     .attr("d", textArc)
+    //     .attr("id", `arcTextPath-${index}-${id}`)
+    //     .attr("fill", "none")
+    //     .attr("stroke", "none");
+
+    //   mainGroup
+    //     .append("text")
+    //     .attr("dy", "6px")
+    //     .attr("x", "7px")
+    //     .append("textPath")
+    //     .attr("xlink:href", `#arcTextPath-${index}-${id}`)
+    //     .attr("startOffset", "50%")
+    //     .attr("fill", "rgb(224, 225, 221)")
+    //     .attr("font-size", "11px")
+    //     .text(arcsData.label)
+    //     .style("cursor", "pointer")
+    //     .on("click", () => handleArcClick(index));
+    // });
+
+    const verticalBarWidth = 10;
+    const verticalBarHeight = 20;
+    const horizontalBarWidth = 50;
+    const horizontalBarHeight = 10;
+
+    const NumberOfbuttons = 5;
+
+    const arcLength = pi / (NumberOfbuttons - 1);
+
+    for (let i = 0; i < NumberOfbuttons; i++) {
+      const angle = arcLength * i;
+      const baseTransform = `rotate(${(angle * 180) / Math.PI - 90})`;
+      const pressedTransform = `${baseTransform} translate(0, 10)`;
+
+      const tShapeButtonGroup = mainGroup
+        .append("g")
+        .attr("class", `t-shape-group-${id}-${i}`)
+        .attr(
+          "transform",
+          selectedTShapeButton === i ? pressedTransform : baseTransform
+        );
+
+      // Vertical rectangle
+      tShapeButtonGroup
+        .append("rect")
+        .attr("x", -verticalBarWidth / 2)
+        .attr("y", -circleRadius - verticalBarHeight)
+        .attr("width", verticalBarWidth)
+        .attr("height", verticalBarHeight)
         .attr("fill", componentColour)
-        .attr("stroke", componentColour2)
-        .attr("stroke-width", 1)
-        .style("cursor", "pointer")
-        .on("click", () => handleArcClick(index));
+        .style("cursor", "pointer");
 
-      const textArc = d3
-        .arc()
-        .innerRadius(circleRadius + outerRadii[index] + 10)
-        .outerRadius(circleRadius + outerRadii[index] + 10)
-        .startAngle(arcsData.startAngle)
-        .endAngle(arcsData.endAngle);
+      // Horizontal rectangle
+      tShapeButtonGroup
+        .append("rect")
+        .attr("x", -horizontalBarWidth / 2)
+        .attr("y", -circleRadius - verticalBarHeight - horizontalBarHeight)
+        .attr("width", horizontalBarWidth)
+        .attr("height", horizontalBarHeight)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("fill", componentColour)
+        .style("cursor", "pointer");
 
-      mainGroup
-        .append("path")
-        .attr("d", textArc)
-        .attr("id", `arcTextPath-${index}-${id}`)
-        .attr("fill", "none")
-        .attr("stroke", "none");
+      tShapeButtonGroup.on("click", function () {
+        const previousButton = selectedTShapeButton;
 
-      mainGroup
-        .append("text")
-        .attr("dy", "6px")
-        .attr("x", "7px")
-        .append("textPath")
-        .attr("xlink:href", `#arcTextPath-${index}-${id}`)
-        .attr("startOffset", "50%")
-        .attr("fill", "rgb(224, 225, 221)")
-        .attr("font-size", "11px")
-        .text(arcsData.label)
-        .style("cursor", "pointer")
-        .on("click", () => handleArcClick(index));
-    });
+        // Update selected button state
+        setSelectedTShapeButton(i);
+
+        // Reset previous button if exists
+        if (previousButton !== null) {
+          d3.select(`.t-shape-group-${id}-${previousButton}`)
+            .transition()
+            .duration(200)
+            .ease(d3.easeCubicOut)
+            .attr("transform", baseTransform);
+        }
+
+        // Press current button
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .ease(d3.easeCubicOut)
+          .attr("transform", pressedTransform);
+
+        handleArcClick(i);
+      });
+
+      if (selectedTShapeButton === i) {
+        tShapeButtonGroup.attr("transform", pressedTransform);
+      }
+    }
 
     const rsiIndicator = d3
       .arc()
       .innerRadius(circleRadius)
       .outerRadius(circleRadius + 15)
-      .startAngle(Math.PI / 2)
-      .endAngle(0);
+      .startAngle(rsiStartAngle)
+      .endAngle(rsiEndAngle);
 
     mainGroup
       .append("path")
@@ -225,7 +311,7 @@ function Gylph({ id, data }) {
         text: "100%",
         textx: +20,
         texty: -5,
-        angle: -Math.PI / 2,
+        angle: -rsiEndAngle,
         x1: circleRadius,
         y1: -5 + circleRadius,
         x2: circleRadius,
@@ -236,7 +322,7 @@ function Gylph({ id, data }) {
         text: "0%",
         textx: +30,
         texty: +5,
-        angle: 0,
+        angle: rsiStartAngle,
         x1: -5 + circleRadius,
         y1: circleRadius,
         x2: circleRadius + 20,
@@ -247,7 +333,7 @@ function Gylph({ id, data }) {
         text: "70%",
         textx: +30,
         texty: -5,
-        angle: (-7 / 20) * Math.PI,
+        angle: 0.9 * pi,
         x1: circleRadius,
         y1: circleRadius,
         x2: circleRadius + 20,
@@ -258,39 +344,21 @@ function Gylph({ id, data }) {
         text: "30%",
         textx: +35,
         texty: 0,
-        angle: (-3 / 20) * Math.PI,
+        angle: 1.1 * pi,
         x1: circleRadius,
         y1: circleRadius,
         x2: circleRadius + 20,
         y2: circleRadius + 20,
       },
     ];
-    lineValues.forEach((line) => {
-      const startX = line.x1 * Math.cos(line.angle);
-      const startY = line.y1 * Math.sin(line.angle);
 
-      const endX = line.x2 * Math.cos(line.angle);
-      const endY = line.y2 * Math.sin(line.angle);
+    mainGroup
+      .append("circle")
+      .attr("r", circleRadius)
+      .attr("fill", "rgb(119, 141, 169)");
 
-      mainGroup
-        .append("line")
-        .attr("x1", startX)
-        .attr("y1", startY)
-        .attr("x2", endX)
-        .attr("y2", endY)
-        .attr("stroke", "rgb(119, 141, 169)")
-        .attr("stroke-width", 3);
-      mainGroup
-        .append("text")
-        .attr("fill", "rgb(224, 225, 221)")
-        .attr("font-size", "15px")
-        .attr("text-anchor", "end")
-        .attr("x", endX + line.textx)
-        .attr("y", endY + line.texty)
-        .text(line.text);
-    });
     generateGlyphConnectedGraph(mainGroup, tooltipGroup);
-  }, [outerRadii, id, handleArcClick]);
+  }, [id, handleArcClick, indicatorSeclected, selectedTShapeButton]);
 
   useEffect(() => {
     if (!data || data.length === 0 || !isExpanded) return;
@@ -324,18 +392,6 @@ function Gylph({ id, data }) {
       verticalLine.style("display", "none");
     }
   }, [hoveredIndex, isExpanded, data, timeSeriesData.xAxis]);
-
-  function generateButton(cornerRadius, startAngle, endAngle, outerRadius) {
-    const arcButton = d3
-      .arc()
-      .innerRadius(circleRadius)
-      .outerRadius(circleRadius + outerRadius)
-      .cornerRadius(cornerRadius)
-      .startAngle(startAngle)
-      .endAngle(endAngle);
-
-    return arcButton;
-  }
 
   function generateGlyphConnectedGraph(mainGroup, tooltipGroup) {
     const connectedGraphGroup = mainGroup.append("g");
@@ -374,18 +430,6 @@ function Gylph({ id, data }) {
       .scaleQuantize()
       .domain([0, data.length - 1])
       .range(customColours);
-
-    // const colourScale = d3
-    //   .scaleLinear()
-    //   .domain([0, data.length - 1])
-    //   .range(["red", "green"]);
-
-    // connectedGraphGroup
-    //   .append("path")
-    //   .datum(data)
-    //   .attr("fill", "none")
-    //   .attr("stroke", componentColour)
-    //   .attr("stroke-width", 1);
 
     connectedGraphGroup
       .attr("class", "connected-graph")
@@ -513,11 +557,6 @@ function Gylph({ id, data }) {
       .domain([0, data.length - 1])
       .range(customColours);
 
-    // const colourScale = d3
-    //   .scaleLinear()
-    //   .domain([0, data.length - 1])
-    //   .range(["red", "green"]);
-
     const expandedGraphGroup = svg.append("g");
 
     const tooltip = d3
@@ -526,20 +565,20 @@ function Gylph({ id, data }) {
       .attr("class", "expanded-tooltip")
       .style("opacity", 0);
 
-    // expandedGraphGroup
-    //   .append("path")
-    //   .datum(data)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "url(#line-gradient)")
-    //   .attr("stroke-width", 2)
-    //   .attr(
-    //     "d",
-    //     d3
-    //       .line()
-    //       .curve(d3.curveBasis)
-    //       .x((d) => xScale(d[indicatorSeclected.xAxis]))
-    //       .y((d) => yScale(d[indicatorSeclected.yAxis]))
-    //   );
+    expandedGraphGroup
+      .append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "url(#line-gradient)")
+      .attr("stroke-width", 1)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => xScale(d[indicatorSeclected.xAxis]))
+          .y((d) => yScale(d[indicatorSeclected.yAxis]))
+      );
     const gradient = svg
       .append("defs")
       .append("linearGradient")

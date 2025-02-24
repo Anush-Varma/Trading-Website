@@ -7,7 +7,7 @@ function HomePage() {
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const stocksPerPage = 30;
+  const stocksPerPage = 50;
 
   const dataPath = "/data/stocks_30.json";
 

@@ -60,6 +60,11 @@ function ConnectedScatterPlot({ data, ticker }) {
       .attr("cy", (d) => yScale(d.SMA50))
       .attr("r", 4)
       .attr("fill", (d, i) => colourScale(i))
+      .attr("opacity", 0)
+      .transition()
+      .duration(100)
+      .delay((d, i) => i * 10)
+      .attr("cy", (d) => yScale(d.SMA50))
       .attr("opacity", 0.7);
 
     // Add axes

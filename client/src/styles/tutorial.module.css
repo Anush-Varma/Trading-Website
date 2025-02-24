@@ -6,11 +6,13 @@
 
 .titleDescription {
   text-align: center;
+  color: var(--component-colour3);
   margin-bottom: 3rem;
 }
 
 .titleDescription h1 {
   margin-bottom: 1rem;
+  color: var(--component-colour3);
 }
 
 .example {
@@ -19,9 +21,14 @@
   padding: 1rem;
   gap: 2rem;
   align-items: center;
+  justify-content: space-between;
+  min-height: 400px;
 }
 
-.leftGraph {
+.leftGraph,
+.GlyphGraph {
+  flex: 1;
+  /* width: 50%; */
   background-color: var(--component-colour2);
   border-radius: 20px;
   box-shadow: 0 5px 8px var(--shadow-colour);
@@ -29,6 +36,7 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
+  position: relative;
 }
 .leftGraph::before {
   content: "";
@@ -40,26 +48,21 @@
   transition: opacity 0.2s ease;
 }
 
-.GlyphGraph {
-  background-color: var(--component-colour);
-  border-radius: 20px;
-  box-shadow: 0 5px 8px var(--shadow-colour);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-}
-
 .leftGraph:hover::before {
   opacity: 1;
 }
 
 .rightText {
   flex: 1;
+  color: var(--component-colour3);
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .rightText h2 {
+  color: var(--component-colour3);
   margin-bottom: 1rem;
 }
 
