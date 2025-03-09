@@ -4,7 +4,7 @@ import "../styles/gylph.css";
 import { use } from "react";
 
 function Gylph({ id, data }) {
-  const circleRadius = 85;
+  const circleRadius = 70;
   const componentColour = "rgb(13, 27, 42)";
   const componentColour2 = "rgb(119, 141, 169)";
 
@@ -122,8 +122,8 @@ function Gylph({ id, data }) {
     if (!data || data.length === 0) return;
     d3.select(svgRef.current).selectAll("*").remove();
 
-    const width = 300;
-    const height = 300;
+    const width = 250;
+    const height = 250;
 
     const svg = d3
       .select(svgRef.current)
@@ -141,83 +141,7 @@ function Gylph({ id, data }) {
       .attr("class", "tooltip-group")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    // create circle glyph
-
     const pi = Math.PI;
-    // const arcsData = [
-    //   {
-    //     startAngle: (3 * pi) / 2, // 3pi/2
-    //     endAngle: (17 * pi) / 10, // 17pi/10
-    //     label: "SMA 10 / 50",
-    //   },
-    //   {
-    //     startAngle: (3 * pi) / 2 + pi / 5, // 17pi/10
-    //     endAngle: (3 * pi) / 2 + 2 * (pi / 5), //  19pi/10
-    //     label: "SMA 50 / 100",
-    //   },
-    //   {
-    //     startAngle: (3 * pi) / 2 + 2 * (pi / 5), // 19pi/10
-    //     endAngle: (3 * pi) / 2 + 3 * (pi / 5), // 21pi/10
-    //     label: "EMA 10 / 50",
-    //   },
-    //   {
-    //     startAngle: (3 * pi) / 2 + 3 * (pi / 5), // 21pi/10
-    //     endAngle: (3 * pi) / 2 + 4 * (pi / 5), // 23pi/10
-    //     label: "MACD",
-    //   },
-    //   {
-    //     startAngle: (3 * pi) / 2 + 4 * (pi / 5), // 23pi/10
-    //     endAngle: (3 * pi) / 2 + 5 * (pi / 5), // 25pi/10
-    //     label: "LBB / UBB",
-    //   },
-    // ];
-
-    // add buttons to glyph with text
-
-    // arcsData.forEach((arcsData, index) => {
-    //   const arc = generateButton(
-    //     5,
-    //     arcsData.startAngle,
-    //     arcsData.endAngle,
-    //     outerRadii[index]
-    //   );
-
-    //   mainGroup
-    //     .append("path")
-    //     .attr("d", arc)
-    //     .attr("fill", componentColour)
-    //     .attr("stroke", componentColour2)
-    //     .attr("stroke-width", 2)
-    //     .style("cursor", "pointer")
-    //     .on("click", () => handleArcClick(index));
-
-    //   const textArc = d3
-    //     .arc()
-    //     .innerRadius(circleRadius + outerRadii[index] + 10)
-    //     .outerRadius(circleRadius + outerRadii[index] + 10)
-    //     .endAngle(arcsData.startAngle)
-    //     .startAngle(arcsData.endAngle);
-
-    //   mainGroup
-    //     .append("path")
-    //     .attr("d", textArc)
-    //     .attr("id", `arcTextPath-${index}-${id}`)
-    //     .attr("fill", "none")
-    //     .attr("stroke", "none");
-
-    //   mainGroup
-    //     .append("text")
-    //     .attr("dy", "6px")
-    //     .attr("x", "7px")
-    //     .append("textPath")
-    //     .attr("xlink:href", `#arcTextPath-${index}-${id}`)
-    //     .attr("startOffset", "50%")
-    //     .attr("fill", "rgb(224, 225, 221)")
-    //     .attr("font-size", "11px")
-    //     .text(arcsData.label)
-    //     .style("cursor", "pointer")
-    //     .on("click", () => handleArcClick(index));
-    // });
 
     const verticalBarWidth = 10;
     const verticalBarHeight = 20;
@@ -270,13 +194,7 @@ function Gylph({ id, data }) {
         )
         .style("cursor", "pointer");
 
-      const buttonLabels = [
-        "EMA10 / EMA50",
-        "SMA50 / SMA100",
-        "SMA10 / SMA50",
-        "MACD / Signal",
-        "UBB / LBB",
-      ];
+      const buttonLabels = ["EMA", "SMA 50", "SMA 10", "MACD", "UBB"];
 
       tShapeButtonGroup
         .append("text")
@@ -393,8 +311,8 @@ function Gylph({ id, data }) {
     const xExtent = d3.extent(data, (d) => d[indicatorSeclected.xAxis]);
     const yExtent = d3.extent(data, (d) => d[indicatorSeclected.yAxis]);
 
-    const xPadding = (xExtent[1] - xExtent[0]) * 0.05;
-    const yPadding = (yExtent[1] - yExtent[0]) * 0.05;
+    const xPadding = (xExtent[1] - xExtent[0]) * 0.1;
+    const yPadding = (yExtent[1] - yExtent[0]) * 0.1;
 
     const xScale = d3
       .scaleLinear()
@@ -488,18 +406,18 @@ function Gylph({ id, data }) {
       .append("text")
       .attr("text-anchor", "middle")
       .attr("x", 0)
-      .attr("y", graphRadius + 30)
+      .attr("y", graphRadius + 25)
       .text(`${indicatorSeclected.xAxis}`)
       .attr("fill", componentColour)
-      .attr("font-size", "11px");
+      .attr("font-size", "10px");
 
     connectedGraphGroup
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `rotate(-90) translate(0,-${graphRadius + 25})`)
+      .attr("transform", `rotate(-90) translate(0,-${graphRadius + 22})`)
       .text(`${indicatorSeclected.yAxis}`)
       .attr("fill", componentColour)
-      .attr("font-size", "11px");
+      .attr("font-size", "10px");
 
     return connectedGraphGroup;
   }

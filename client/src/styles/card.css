@@ -3,12 +3,11 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  margin: 10px;
-  padding: 10px;
+  margin: 5px;
+  /* padding: 10px; */
   background-color: var(--component-colour);
   border-radius: 20px;
-  width: 330px;
-  height: 330px;
+
   box-shadow: 0 5px 8px var(--shadow-colour);
 }
 .card::before {
