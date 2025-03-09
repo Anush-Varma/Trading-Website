@@ -10,12 +10,7 @@ function Nav() {
   const auth = getAuth();
 
   const handleTutorialClick = () => {
-    if (!auth.currentUser) {
-      alert("Please sign in or create an account to access the tutorial");
-      return;
-    } else {
-      navigate("/Tutorial");
-    }
+    navigate("/Tutorial");
   };
 
   const handleHomeButtonClick = () => {
@@ -31,6 +26,7 @@ function Nav() {
       signOut(auth)
         .then(() => {
           alert("Signed Out");
+          navigate("/");
         })
         .catch((error) => {
           console.log(error);

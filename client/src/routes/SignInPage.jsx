@@ -20,6 +20,7 @@ function SignInPage() {
       alert("Logged in successfully");
       setEmail("");
       setPassword("");
+      navigate("/Tutorial");
     } catch (error) {
       console.log(error);
       alert("Failed to sign in try again");

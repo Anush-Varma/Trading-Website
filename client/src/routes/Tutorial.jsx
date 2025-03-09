@@ -5,9 +5,12 @@ import axios from "axios";
 import TimeSeriesPlot from "../components/TimeSeriesPlot";
 import Card from "../components/Card";
 import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
+import { auth } from "../firebase/firebase";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Tutorial() {
+  const navigate = useNavigate();
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
   const [selectedStock, setSelectedStock] = useState(null);
@@ -23,6 +26,16 @@ function Tutorial() {
     };
     fetchStockTickers();
   }, []);
+
+  const practice = () => {
+    const user = auth.currentUser;
+    if (user) {
+      // navigate("/Practice");
+    } else {
+      alert("Please sign in or create an account to access the practice");
+      navigate("/SignIn");
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -97,7 +110,7 @@ function Tutorial() {
         </div>
       </div>
       <div className={styles.practiceButton}>
-        <Button text="Practice"></Button>
+        <Button text="Practice" onClick={practice}></Button>
       </div>
     </div>
   );
