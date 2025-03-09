@@ -28,7 +28,7 @@ function Gylph({ id, data }) {
     yAxis: "SMA50",
   });
 
-  const [selectedTShapeButton, setSelectedTShapeButton] = useState(null);
+  const [selectedTShapeButton, setSelectedTShapeButton] = useState(2);
 
   const [timeSeriesData, setTimeSeriesData] = useState({
     xAxis: "date",
@@ -43,8 +43,8 @@ function Gylph({ id, data }) {
     switch (index) {
       case 0:
         setIndicatorSelected({
-          xAxis: "SMA10",
-          yAxis: "SMA50",
+          xAxis: "EMA10",
+          yAxis: "EMA50",
         });
         break;
       case 1:
@@ -55,8 +55,8 @@ function Gylph({ id, data }) {
         break;
       case 2:
         setIndicatorSelected({
-          xAxis: "EMA10",
-          yAxis: "EMA50",
+          xAxis: "SMA10",
+          yAxis: "SMA50",
         });
         break;
       case 3:
@@ -225,6 +225,7 @@ function Gylph({ id, data }) {
     const horizontalBarHeight = 10;
 
     const NumberOfbuttons = 5;
+    const selectedButtonColor = "rgb(232,70,23)";
 
     const arcLength = pi / (NumberOfbuttons - 1);
 
@@ -248,7 +249,10 @@ function Gylph({ id, data }) {
         .attr("y", -circleRadius - verticalBarHeight)
         .attr("width", verticalBarWidth)
         .attr("height", verticalBarHeight)
-        .attr("fill", componentColour)
+        .attr(
+          "fill",
+          selectedTShapeButton === i ? selectedButtonColor : componentColour
+        )
         .style("cursor", "pointer");
 
       // Horizontal rectangle
@@ -260,31 +264,37 @@ function Gylph({ id, data }) {
         .attr("height", horizontalBarHeight)
         .attr("rx", 5)
         .attr("ry", 5)
-        .attr("fill", componentColour)
+        .attr(
+          "fill",
+          selectedTShapeButton === i ? selectedButtonColor : componentColour
+        )
         .style("cursor", "pointer");
 
+      const buttonLabels = [
+        "EMA10 / EMA50",
+        "SMA50 / SMA100",
+        "SMA10 / SMA50",
+        "MACD / Signal",
+        "UBB / LBB",
+      ];
+
+      tShapeButtonGroup
+        .append("text")
+        .attr("x", 0)
+        .attr("y", -circleRadius - verticalBarHeight - horizontalBarHeight - 5)
+        .attr("text-anchor", "middle")
+        .attr("fill", "rgb(224, 225, 221)")
+        .attr("font-size", "11px")
+        .style("pointer-events", "none")
+        .text(buttonLabels[i]);
+
       tShapeButtonGroup.on("click", function () {
-        const previousButton = selectedTShapeButton;
-
-        // Update selected button state
         setSelectedTShapeButton(i);
-
-        // Reset previous button if exists
-        if (previousButton !== null) {
-          d3.select(`.t-shape-group-${id}-${previousButton}`)
-            .transition()
-            .duration(200)
-            .ease(d3.easeCubicOut)
-            .attr("transform", baseTransform);
-        }
-
-        // Press current button
         d3.select(this)
+          .selectAll("rect")
           .transition()
           .duration(200)
-          .ease(d3.easeCubicOut)
-          .attr("transform", pressedTransform);
-
+          .attr("fill", selectedButtonColor);
         handleArcClick(i);
       });
 
@@ -304,53 +314,6 @@ function Gylph({ id, data }) {
       .append("path")
       .attr("d", rsiIndicator)
       .attr("fill", componentColour);
-
-    const lineValues = [
-      {
-        // 100% line data
-        text: "100%",
-        textx: +20,
-        texty: -5,
-        angle: -rsiEndAngle,
-        x1: circleRadius,
-        y1: -5 + circleRadius,
-        x2: circleRadius,
-        y2: circleRadius + 20,
-      },
-      {
-        // 0% line data
-        text: "0%",
-        textx: +30,
-        texty: +5,
-        angle: rsiStartAngle,
-        x1: -5 + circleRadius,
-        y1: circleRadius,
-        x2: circleRadius + 20,
-        y2: circleRadius,
-      },
-      {
-        // 70% line data
-        text: "70%",
-        textx: +30,
-        texty: -5,
-        angle: 0.9 * pi,
-        x1: circleRadius,
-        y1: circleRadius,
-        x2: circleRadius + 20,
-        y2: circleRadius + 20,
-      },
-      {
-        // 30% line data
-        text: "30%",
-        textx: +35,
-        texty: 0,
-        angle: 1.1 * pi,
-        x1: circleRadius,
-        y1: circleRadius,
-        x2: circleRadius + 20,
-        y2: circleRadius + 20,
-      },
-    ];
 
     mainGroup
       .append("circle")
@@ -392,6 +355,35 @@ function Gylph({ id, data }) {
       verticalLine.style("display", "none");
     }
   }, [hoveredIndex, isExpanded, data, timeSeriesData.xAxis]);
+
+  useEffect(() => {
+    if (!isExpanded || hoveredIndex === null) return;
+
+    // Reset all points to normal size and opacity
+    d3.select(expandedPlot.current)
+      .selectAll(".scatter-point")
+      .attr("r", 3)
+      .attr("opacity", 0.7);
+
+    // Highlight the hovered point
+    d3.select(expandedPlot.current)
+      .select(`.point-${hoveredIndex}`)
+      .attr("r", 6)
+      .attr("opacity", 1)
+      .attr("stroke", "none")
+      .attr("stroke-width", 1);
+
+    // Show tooltip for this point
+    const hoveredData = data[hoveredIndex];
+    const tooltip = d3.select(expandedPlot.current).select(".expanded-tooltip");
+
+    tooltip.transition().duration(200).style("opacity", 1);
+    tooltip.html(
+      `(${hoveredData[indicatorSeclected.xAxis].toFixed(2)}, ${hoveredData[
+        indicatorSeclected.yAxis
+      ].toFixed(2)})`
+    );
+  }, [hoveredIndex, isExpanded, data]);
 
   function generateGlyphConnectedGraph(mainGroup, tooltipGroup) {
     const connectedGraphGroup = mainGroup.append("g");
@@ -623,7 +615,7 @@ function Gylph({ id, data }) {
       .data(data)
       .enter()
       .append("circle")
-      .attr("class", "scatter-point")
+      .attr("class", (d, i) => `scatter-point point-${i}`)
       .attr("cx", (d) => xScale(d[indicatorSeclected.xAxis]))
       .attr("cy", (d) => yScale(d[indicatorSeclected.yAxis]))
       .attr("r", 3)
@@ -665,7 +657,13 @@ function Gylph({ id, data }) {
         )
       )
       .attr("fill", colourScale(0))
-      .attr("opacity", 0.9);
+      .attr("opacity", 0.9)
+      .attr(
+        "transform",
+        `rotate(180 ${xScale(data[0][indicatorSeclected.xAxis])} ${yScale(
+          data[0][indicatorSeclected.yAxis]
+        )})`
+      );
 
     // Last point triangle (pointing down)
     expandedGraphGroup
@@ -679,13 +677,7 @@ function Gylph({ id, data }) {
         )
       )
       .attr("fill", colourScale(data.length - 1))
-      .attr("opacity", 0.9)
-      .attr(
-        "transform",
-        `rotate(180 ${xScale(
-          data[data.length - 1][indicatorSeclected.xAxis]
-        )} ${yScale(data[data.length - 1][indicatorSeclected.yAxis])})`
-      );
+      .attr("opacity", 0.9);
   }
 
   function generateExpandedTimeGraph(ref, width, height) {
@@ -813,6 +805,93 @@ function Gylph({ id, data }) {
       .attr("stroke-width", 2)
       .attr("y1", margin.top)
       .attr("y2", innerHeight + margin.top);
+
+    timeSeriesGroup
+      .append("rect")
+      .attr("class", "mouse-overlay")
+      .attr("width", innerWidth)
+      .attr("height", innerHeight)
+      .attr("x", margin.left)
+      .attr("y", margin.top)
+      .attr("fill", "none")
+      .attr("pointer-events", "all")
+      .on("mousemove", function (event) {
+        const [mouseX] = d3.pointer(event);
+        verticalLine
+          .style("display", null)
+          .attr("transform", `translate(${mouseX}, 0)`);
+
+        if (this._lastX && Math.abs(this._lastX - mouseX) < 3) {
+          return;
+        }
+        this._lastX = mouseX;
+
+        try {
+          const bisectDate = d3.bisector((d) =>
+            parseDate(d[timeSeriesData.xAxis])
+          ).left;
+          const x0 = xScale.invert(mouseX);
+          if (
+            x0 < parseDate(data[0][timeSeriesData.xAxis]) ||
+            x0 > parseDate(data[data.length - 1][timeSeriesData.xAxis])
+          ) {
+            return;
+          }
+
+          const index = bisectDate(data, x0, 1);
+
+          if (index <= 0 || index >= data.length) {
+            const idx = Math.max(0, Math.min(data.length - 1, index));
+            setHoveredIndex(idx);
+            return;
+          }
+
+          const d0 = data[index - 1];
+          const d1 = data[index] || d0;
+          if (!d0 || !d1) return;
+
+          // Calculate distances and add slight preference for current point (hysteresis)
+          const dist0 = Math.abs(x0 - parseDate(d0[timeSeriesData.xAxis]));
+          const dist1 = Math.abs(parseDate(d1[timeSeriesData.xAxis]) - x0);
+          const closestPoint = dist0 > dist1 ? d1 : d0;
+          const closestIndex = data.indexOf(closestPoint);
+
+          setHoveredIndex(closestIndex);
+
+          verticalLine
+            .style("display", null)
+            .attr(
+              "transform",
+              `translate(${xScale(
+                parseDate(closestPoint[timeSeriesData.xAxis])
+              )}, 0)`
+            );
+
+          const tooltip = d3.select(ref.current).select(".expanded-tooltip");
+          tooltip
+            .style("opacity", 1)
+            .style("left", `${event.pageX + 10}px`)
+            .style(
+              "top",
+              `${event.pageY - 25}px`
+            ).html(`Date: ${closestPoint[timeSeriesData.xAxis]}<br>
+                   ${
+                     indicatorSeclected.xAxis
+                   }: ${closestPoint[indicatorSeclected.xAxis].toFixed(2)}<br>
+                   ${
+                     indicatorSeclected.yAxis
+                   }: ${closestPoint[indicatorSeclected.yAxis].toFixed(2)}`);
+        } catch (e) {
+          console.error("Error in mousemove fro expanded right graph", e);
+        }
+      })
+      .on("mouseout", function () {
+        verticalLine.style("display", "none");
+        setHoveredIndex(null);
+
+        // Hide tooltip
+        d3.select(ref.current).select(".expanded-tooltip").style("opacity", 0);
+      });
 
     const legend = timeSeriesGroup
       .append("g")
