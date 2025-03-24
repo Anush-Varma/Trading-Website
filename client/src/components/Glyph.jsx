@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
-import "../styles/gylph.css";
+import styles from "../styles/glyph.module.css";
 import { use } from "react";
 
 function Gylph({ id, data }) {
@@ -79,6 +79,13 @@ function Gylph({ id, data }) {
   const handlePlotClick = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      // Set initial RSI value from the latest data point
+      setRsiValue(data[data.length - 1]?.RSI || 50);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!svgRef.current || !data || data.length === 0) return;
@@ -293,7 +300,9 @@ function Gylph({ id, data }) {
 
     // Show tooltip for this point
     const hoveredData = data[hoveredIndex];
-    const tooltip = d3.select(expandedPlot.current).select(".expanded-tooltip");
+    const tooltip = d3
+      .select(expandedPlot.current)
+      .select(`.${styles.expandedTooltip}`);
 
     tooltip.transition().duration(200).style("opacity", 1);
     tooltip.html(
@@ -372,7 +381,7 @@ function Gylph({ id, data }) {
         setRsiValue(d.RSI);
         tooltipGroup
           .append("text")
-          .attr("id", "tooltip-text")
+          .attr("id", styles.tooltipText)
           .attr("x", xScale(d[indicatorSeclected.xAxis]))
           .attr("y", yScale(d[indicatorSeclected.yAxis]))
           .attr("font-size", "13px")
@@ -386,7 +395,7 @@ function Gylph({ id, data }) {
       .on("mouseout", function () {
         d3.select(this).attr("r", 2).attr("opacity", 0.7);
 
-        d3.select("#tooltip-text").remove();
+        d3.select(`#${styles.tooltipText}`).remove();
       });
 
     const xAxis = d3.axisBottom(xScale).ticks(3);
@@ -472,7 +481,7 @@ function Gylph({ id, data }) {
     const tooltip = d3
       .select(ref.current)
       .append("div")
-      .attr("class", "expanded-tooltip")
+      .attr("class", styles.expandedTooltip)
       .style("opacity", 0);
 
     expandedGraphGroup
@@ -785,7 +794,10 @@ function Gylph({ id, data }) {
               )}, 0)`
             );
 
-          const tooltip = d3.select(ref.current).select(".expanded-tooltip");
+          const tooltip = d3
+            .select(ref.current)
+            .select(`.${styles.expandedTooltip}`);
+
           tooltip
             .style("opacity", 1)
             .style("left", `${event.pageX + 10}px`)
@@ -808,7 +820,9 @@ function Gylph({ id, data }) {
         setHoveredIndex(null);
 
         // Hide tooltip
-        d3.select(ref.current).select(".expanded-tooltip").style("opacity", 0);
+        d3.select(ref.current)
+          .select(`.${styles.expandedTooltip}`)
+          .style("opacity", 0);
       });
 
     const legend = timeSeriesGroup
@@ -843,19 +857,19 @@ function Gylph({ id, data }) {
   }
 
   return (
-    <div className="circle-container">
+    <div className={styles.circleContainer}>
       <svg ref={svgRef} className="w-full h-full"></svg>
       {isExpanded && (
         <div
-          className="expanded-graph-overlay"
+          className={styles.expandedGraphOverlay}
           onClick={() => setIsExpanded(false)}
         >
           <div
-            className="expanded-graph-container"
+            className={styles.expandedGraphContainer}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="left-graph" ref={expandedPlot}></div>
-            <div className="right-graph" ref={expandedPlot2}></div>
+            <div className={styles.leftGraph} ref={expandedPlot}></div>
+            <div className={styles.rightGraph} ref={expandedPlot2}></div>
           </div>
         </div>
       )}

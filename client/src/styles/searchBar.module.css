@@ -1,4 +1,4 @@
-.search-input {
+.searchInput {
   border: none;
   border-bottom: 2px solid var(--component-colour3);
   background-color: transparent;
@@ -12,6 +12,6 @@
   max-width: 600px;
 }
 
-.search-input::placeholder {
+.searchInput::placeholder {
   color: var(--component-colour3);
 }

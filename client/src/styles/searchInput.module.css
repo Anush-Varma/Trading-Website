@@ -1,4 +1,4 @@
-.search-input {
+.searchInput {
   border: none;
   border-bottom: 2px solid var(--component-colour3);
   background-color: transparent;
@@ -10,6 +10,6 @@
   width: 50%;
 }
 
-.search-input::placeholder {
+.searchInput::placeholder {
   color: var(--component-colour3);
 }

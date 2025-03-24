@@ -28,7 +28,6 @@
 .leftGraph,
 .GlyphGraph {
   flex: 1;
-  /* width: 50%; */
   background-color: var(--component-colour2);
   border-radius: 20px;
   box-shadow: 0 5px 8px var(--shadow-colour);

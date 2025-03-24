@@ -1,11 +1,12 @@
 import React from "react";
 import { auth } from "../firebase/firebase";
-import "../styles/signInPage.css";
+import styles from "../styles/signInPage.module.css";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ function SignInPage() {
       navigate("/Tutorial");
     } catch (error) {
       console.log(error);
-      alert("Failed to sign in try again");
+      toast.error("Failed to sign in try again");
     }
   };
 
@@ -32,14 +33,15 @@ function SignInPage() {
   };
 
   return (
-    <div className="signInWrapper">
-      <div className="signInCard">
-        <div className="signInHeader">
+    <div className={styles.signInWrapper}>
+      <Toaster position="bottom-left" reverseOrder={false}></Toaster>
+      <div className={styles.signInCard}>
+        <div className={styles.signInHeader}>
           <h2>Sign In</h2>
         </div>
-        <div className="signInForm">
+        <div className={styles.signInForm}>
           <form onSubmit={signIn}>
-            <div className="signIn-form-group">
+            <div className={styles.signInFormGroup}>
               <label>Email</label>
               <Input
                 type="email"
@@ -48,7 +50,7 @@ function SignInPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="signIn-form-group">
+            <div className={styles.signInFormGroup}>
               <label>Password</label>
               <Input
                 type="password"
@@ -57,7 +59,7 @@ function SignInPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div className="signInButton">
+            <div className={styles.signInButton}>
               <Button text="Sign In" onClick={signIn}></Button>
               <Button text="Sign Up" type="button" onClick={signUp}></Button>
             </div>

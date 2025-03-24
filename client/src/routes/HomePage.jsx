@@ -1,5 +1,5 @@
 import Card from "../components/Card";
-import "../styles/homePage.css";
+import styles from "../styles/HomePage.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -26,9 +26,9 @@ function HomePage() {
   const currentStocks = stockTickers.slice(indexOfFirstStock, indexOfLastStock);
 
   return (
-    <div className="home-page">
-      <div className="cards-wrapper">
-        <div className="cards">
+    <div>
+      <div className={styles.cardsWrapper}>
+        <div className={styles.cards}>
           {currentStocks.map((ticker, index) => (
             <Card
               key={ticker}

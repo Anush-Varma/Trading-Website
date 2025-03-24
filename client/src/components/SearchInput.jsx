@@ -1,7 +1,7 @@
-import "../styles/searchInput.css";
+import styles from "../styles/searchInput.module.css";
 
 function SearchInput(props) {
-  return <input className="search-input" placeholder="Search"></input>;
+  return <input className={styles.searchInput} placeholder="Search"></input>;
 }
 
 export default SearchInput;

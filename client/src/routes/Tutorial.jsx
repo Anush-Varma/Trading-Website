@@ -8,6 +8,7 @@ import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
 import { auth } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 function Tutorial() {
   const navigate = useNavigate();
@@ -32,13 +33,18 @@ function Tutorial() {
     if (user) {
       // navigate("/Practice");
     } else {
-      alert("Please sign in or create an account to access the practice");
-      navigate("/SignIn");
+      toast.error("Please sign in or create an account to access the practice");
+      // navigate("/SignIn");
     }
   };
 
   return (
     <div className={styles.container}>
+      <Toaster
+        position="bottom-left"
+        reverseOrder={false}
+        toastOptions={{ duration: 4000 }}
+      />
       <div className={styles.titleDescription}>
         <h1>Welcome to the Tutorial</h1>
         <h2>

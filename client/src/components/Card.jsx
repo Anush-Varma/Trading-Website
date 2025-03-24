@@ -1,11 +1,11 @@
 import * as React from "react";
-import "../styles/card.css";
-import Gylph from "./Gylph";
+import styles from "../styles/card.module.css";
+import Gylph from "./Glyph";
 
 function Card(props) {
   return (
-    <div className="card">
-      <h1 className="stock-symbol">{props.ticker}</h1>
+    <div className={styles.card}>
+      <h1 className={styles.stockSymbol}>{props.ticker}</h1>
       <Gylph className="gylph" id={props.index} data={props.stockData}></Gylph>
     </div>
   );

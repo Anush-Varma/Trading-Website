@@ -1,4 +1,4 @@
-.signInCard {
+.signUpCard {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -11,7 +11,7 @@
   box-shadow: 0 5px 8px var(--shadow-colour);
 }
 
-.signInWrapper {
+.signUpWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,24 +19,23 @@
   padding: 1rem;
 }
 
-.signInHeader {
+.signUpHeader {
   padding: 1rem;
 }
 
-.signInForm {
+.signUpForm {
   display: flex;
   flex-direction: column;
 }
 
-.signIn-form-group {
+.signUpFormGroup {
   display: flex;
   flex-direction: column;
   padding: 1rem;
 }
 
-.signInButton {
+.signUpButton {
   display: flex;
-  justify-content: center;
   justify-content: center;
   padding: 1rem;
 }

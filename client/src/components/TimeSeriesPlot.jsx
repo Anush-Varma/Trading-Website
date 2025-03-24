@@ -57,24 +57,6 @@ function TimeSeriesPlot({ data, ticker }) {
       .delay(1000) // Start after points appear
       .attr("stroke-dashoffset", 0);
 
-    // Add scatter points
-    // svg
-    //   .selectAll("circle")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("cx", (d) => xScale(parseDate(d.date)))
-    //   .attr("cy", (d) => yScale(d.close))
-    //   .attr("r", 3)
-    //   .attr("fill", "black")
-    //   .attr("opacity", 0)
-    //   .transition()
-    //   .duration(1000)
-    //   .delay((d, i) => i * 10)
-    //   .attr("cy", (d) => yScale(d.close))
-    //   .attr("opacity", 0.7);
-
-    // Add X axis
     svg
       .append("g")
       .attr("transform", `translate(0,${innerHeight + margin.top})`)

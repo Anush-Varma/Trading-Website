@@ -1,4 +1,4 @@
-.nav-bar {
+.navBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -8,15 +8,15 @@
   max-width: 100%;
 }
 
-.nav:left,
-nav:right {
+.left,
+.right {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.center-section {
+.centerSection {
   flex-grow: 1;
   min-width: 200px;
   max-width: 300px;
@@ -25,11 +25,11 @@ nav:right {
 }
 
 @media screen and (max-width: 968px) {
-  .nav-bar {
+  .navBar {
     justify-content: center;
   }
 
-  .center-section {
+  .centerSection {
     order: -1;
     width: 100%;
     margin: 0.5rem 0;
@@ -46,10 +46,5 @@ nav:right {
   .right {
     width: 100%;
     justify-content: center;
-  }
-
-  .button {
-    width: 100%;
-    max-width: 200px;
   }
 }

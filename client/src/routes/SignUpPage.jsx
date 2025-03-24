@@ -1,10 +1,11 @@
 import React from "react";
 import { auth } from "../firebase/firebase";
-import "../styles/signUpPage.css";
+import styles from "../styles/signUpPage.module.css";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -15,37 +16,38 @@ function SignUpPage() {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     } else if (password.length < 6) {
-      alert("Password must be at least 6 characters long");
+      toast.error("Password must be at least 6 characters long");
       return;
     } else if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      alert("Account created successfully");
+      toast.success("Account created successfully");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
       console.log(error);
-      alert("Failed to create account try again");
+      toast.error("Failed to create account try again");
     }
   };
 
   return (
-    <div className="signUpWrapper">
-      <div className="signUpCard">
-        <div className="signUpHeader">
+    <div className={styles.signUpWrapper}>
+      <Toaster position="bottom-left" reverseOrder={false} />
+      <div className={styles.signUpCard}>
+        <div className={styles.signUpHeader}>
           <h2>Sign Up</h2>
         </div>
-        <div className="signUpForm">
+        <div className={styles.signUpForm}>
           <form onSubmit={signUp}>
-            <div className="signUp-form-group">
+            <div className={styles.signUpFormGroup}>
               <label>Email</label>
               <Input
                 type="email"
@@ -54,7 +56,7 @@ function SignUpPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="signUp-form-group">
+            <div className={styles.signUpFormGroup}>
               <label>Password</label>
               <Input
                 type="password"
@@ -63,7 +65,7 @@ function SignUpPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div className="signUp-form-group">
+            <div className={styles.signUpFormGroup}>
               <label>Confirm Password</label>
               <Input
                 type="password"
@@ -72,8 +74,8 @@ function SignUpPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <div className="signUpButton">
-              <Button text="Sign Up" onClick={signUp}></Button>
+            <div className={styles.signUpButton}>
+              <Button text="Sign Up" type="submit" />
             </div>
           </form>
         </div>
