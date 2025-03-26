@@ -4,6 +4,7 @@ import Tutorial from "./routes/Tutorial";
 import Layout from "./components/Layout";
 import SignUpPage from "./routes/SignUpPage";
 import SignInPage from "./routes/SignInPage";
+import PracticePage from "./routes/PracticePage";
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
       { path: "/Tutorial", element: <Tutorial /> },
       { path: "/SignUp", element: <SignUpPage /> },
       { path: "/SignIn", element: <SignInPage /> },
+      { path: "/Practice", element: <PracticePage /> },
     ],
   },
 ]);

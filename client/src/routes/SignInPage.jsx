@@ -18,7 +18,7 @@ function SignInPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Logged in successfully");
+      toast.success("Logged in successfully");
       setEmail("");
       setPassword("");
       navigate("/Tutorial");

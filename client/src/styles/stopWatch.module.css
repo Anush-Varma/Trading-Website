@@ -1,0 +1,51 @@
+.stopWatchContainer {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--component-colour2);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 10px var(--shadow-colour);
+}
+
+.stopWatchDisplay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  gap: 10px;
+}
+
+.time {
+  font-size: 25px;
+  color: var(--component-colour3);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+
+  color: var(--component-colour2);
+  border: none;
+  width: 50px;
+  height: 55px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 25px;
+}
+
+.controlBtn svg {
+  fill: var(--component-colour2);
+  width: 20px;
+  height: 20px;
+}

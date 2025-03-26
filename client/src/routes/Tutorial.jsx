@@ -9,6 +9,7 @@ import { auth } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import CheckBox from "../components/CheckBox";
 
 function Tutorial() {
   const navigate = useNavigate();
@@ -31,10 +32,9 @@ function Tutorial() {
   const practice = () => {
     const user = auth.currentUser;
     if (user) {
-      // navigate("/Practice");
+      navigate("/Practice");
     } else {
       toast.error("Please sign in or create an account to access the practice");
-      // navigate("/SignIn");
     }
   };
 
