@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
 import Button from "../components/Button";
-import styles from "../styles/practicePage.module.css";
+import styles from "../styles/userStudyPage.module.css";
 import toast, { Toaster } from "react-hot-toast";
 import CheckBox from "../components/CheckBox";
 import StopWatch from "../components/StopWatch";
@@ -57,8 +57,9 @@ function PracticePage() {
           or neutral trend.
         </p>
         <p className={styles.description}>
-          Each page will be timed with a timer you are able to pause and resume.
-          The timer will automatically start at the start of each question.
+          You will be given 3 groups of questions. Each group will consit of 10
+          questions. Each group will be either time series, connected scatter or
+          enhanced glyphs. The order of the groups will randomised.
         </p>
         <p className={styles.description}>
           You will be assessed on your ability to identify the trends in the
@@ -69,12 +70,13 @@ function PracticePage() {
           will not be shared with any third party. You can find more information
           in the consent form below.
         </p>
-        <p className={styles.description}>
-          You are only able to complete this practice once
-        </p>
+
         <p className={styles.description}>
           An examle of the quesions is given below with the timer. Please take
           your time to familiarise with the example.
+        </p>
+        <p className={styles.description}>
+          You are only able to complete this study once.
         </p>
         <div className={styles.stopWatchExample}>
           <StopWatch></StopWatch>
@@ -175,7 +177,7 @@ function PracticePage() {
           <div className={styles.continueCenter}>
             <Button text="Consent Form" onClick={ConsentForm} />
             <CheckBox
-              label="tick to accept consent"
+              label="I have read and understood the consent form"
               onChange={handleConsentChange}
             ></CheckBox>
           </div>

@@ -116,7 +116,7 @@ function Tutorial() {
         </div>
       </div>
       <div className={styles.practiceButton}>
-        <Button text="Practice" onClick={practice}></Button>
+        <Button text="Go to user study" onClick={practice}></Button>
       </div>
     </div>
   );
