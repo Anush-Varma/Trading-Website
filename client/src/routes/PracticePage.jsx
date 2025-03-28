@@ -17,6 +17,7 @@ function PracticePage() {
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
   const [selectedStock, setSelectedStock] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
   const dataPath = "/data/example_data.json";
 
   useEffect(() => {
@@ -30,8 +31,20 @@ function PracticePage() {
     fetchStockTickers();
   }, []);
 
-  const ConsentForm = () => {};
+  const ConsentForm = () => {
+    const link = document.createElement("a");
+    link.href = "/data/consent_form.pdf";
+    link.download = "consent_form.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Consent form downloaded successfully!");
+  };
   const Continue = () => {};
+
+  const handleConsentChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
 
   return (
     <div className={styles.container}>
@@ -80,6 +93,23 @@ function PracticePage() {
                 />
               )}
             </div>
+            <div className={styles.radioButtonsContainer}>
+              <RadioButton
+                text="Positive"
+                name="timeseries-trend"
+                value="positive"
+              />
+              <RadioButton
+                text="Neutral"
+                name="timeseries-trend"
+                value="neutral"
+              />
+              <RadioButton
+                text="Negative"
+                name="timeseries-trend"
+                value="negative"
+              />
+            </div>
           </div>
           <div className={styles.exampleCard}>
             <h2 className={styles.exampleTitle}>
@@ -93,6 +123,23 @@ function PracticePage() {
                 />
               )}
             </div>
+            <div className={styles.radioButtonsContainer}>
+              <RadioButton
+                text="Positive"
+                name="connected-scatter"
+                value="positive"
+              />
+              <RadioButton
+                text="Neutral"
+                name="connected-scatter"
+                value="neutral"
+              />
+              <RadioButton
+                text="Negative"
+                name="connected-scatter"
+                value="negative"
+              />
+            </div>
           </div>
           <div className={styles.glyphExample}>
             <h2 className={styles.exampleTitle}>
@@ -101,20 +148,41 @@ function PracticePage() {
             <div className={styles.exampleContent}>
               {selectedStock && stockData[selectedStock] && (
                 <Card
+                  className={styles.glyphCard}
                   ticker={selectedStock}
                   stockData={stockData[selectedStock]}
                   index={0}
                 />
               )}
             </div>
+            <div className={styles.radioButtonsContainer}>
+              <RadioButton
+                text="Positive"
+                name="glyph-trend"
+                value="positive"
+              />
+              <RadioButton text="Neutral" name="glyph-trend" value="neutral" />
+              <RadioButton
+                text="Negative"
+                name="glyph-trend"
+                value="negative"
+              />
+            </div>
           </div>
         </div>
-        <Button text="Consent Form" onClick={ConsentForm} />
-        <CheckBox label="tick to accept consent"></CheckBox>
-        <Button text="Continue" onClick={Continue} disabled={true} />
-        <RadioButton text="Option 1" name="options" value="option1" />
-        <RadioButton text="Option 2" name="options" value="option1" />
-        <RadioButton text="Option 3" name="options" value="option1" />
+        <div className={styles.continue}>
+          <div className={styles.continueLeft}></div>
+          <div className={styles.continueCenter}>
+            <Button text="Consent Form" onClick={ConsentForm} />
+            <CheckBox
+              label="tick to accept consent"
+              onChange={handleConsentChange}
+            ></CheckBox>
+          </div>
+          <div className={styles.continueRight}>
+            <Button text="Continue" onClick={Continue} disabled={!isChecked} />
+          </div>
+        </div>
       </div>
     </div>
   );

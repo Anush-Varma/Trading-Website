@@ -8,9 +8,10 @@ function CheckBox({ label, onChange, disabled = false }) {
     if (!disabled) {
       const newCheckedState = !isChecked;
       setIsChecked(newCheckedState);
-    }
-    if (onChange) {
-      onChange(newCheckedState);
+
+      if (onChange) {
+        onChange({ target: { checked: newCheckedState } });
+      }
     }
   };
 

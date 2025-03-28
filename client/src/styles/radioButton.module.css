@@ -21,7 +21,7 @@
   border-radius: 10px;
   background: none;
   border: 0;
-  box-shadow: inset 0 0 0 1.5px #9f9f9f;
+  box-shadow: inset 0 0 0 1.5px var(--component-colour3);
   appearance: none;
   padding: 0;
   margin: 0;
@@ -34,7 +34,7 @@
 }
 
 .radioLabel input:checked {
-  box-shadow: inset 0 0 0 6px var(--component-colour3, #6743ee);
+  box-shadow: inset 0 0 0 6px var(--component-colour3);
 }
 
 .radioLabel span {
@@ -42,5 +42,5 @@
   display: inline-block;
   line-height: 20px;
   padding: 0 8px;
-  color: var(--component-colour3);
+  color: var(--component-colour1);
 }

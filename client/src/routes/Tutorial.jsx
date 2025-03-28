@@ -48,7 +48,7 @@ function Tutorial() {
       <div className={styles.titleDescription}>
         <h1>Welcome to the Tutorial</h1>
         <h2>
-          This tutorial will help you understnad and learn how to use the
+          This tutorial will help you understand and learn how to use the
           enhnaced glyph component and how connected scatter plots work for time
           series data in stock analysis
         </h2>
