@@ -9,6 +9,7 @@ function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const stocksPerPage = 50;
 
+  // const dataPath = "/data/neutral_stock_trend_data.json";
   const dataPath = "/data/stocks_30.json";
 
   useEffect(() => {

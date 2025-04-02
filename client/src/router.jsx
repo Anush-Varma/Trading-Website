@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import SignUpPage from "./routes/SignUpPage";
 import SignInPage from "./routes/SignInPage";
 import UserStudyPage from "./routes/UserStudyPage";
+import QuestionsPage from "./routes/QuestionsPage";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       { path: "/SignUp", element: <SignUpPage /> },
       { path: "/SignIn", element: <SignInPage /> },
       { path: "/Practice", element: <UserStudyPage /> },
+      { path: "/Questions/:setId", element: <QuestionsPage /> },
     ],
   },
 ]);

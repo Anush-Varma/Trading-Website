@@ -40,7 +40,9 @@ function PracticePage() {
     document.body.removeChild(link);
     toast.success("Consent form downloaded successfully!");
   };
-  const Continue = () => {};
+  const Continue = () => {
+    navigate("/Questions/1");
+  };
 
   const handleConsentChange = (e) => {
     setIsChecked(e.target.checked);
