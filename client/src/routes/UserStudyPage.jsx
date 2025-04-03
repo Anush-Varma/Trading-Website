@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { auth } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 import Button from "../components/Button";
 import styles from "../styles/userStudyPage.module.css";
 import toast, { Toaster } from "react-hot-toast";
@@ -11,6 +11,11 @@ import TimeSeriesPlot from "../components/TimeSeriesPlot";
 import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
 import Card from "../components/Card";
 import RadioButton from "../components/RadioButton";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  initialiseStudyOrders,
+  checkUserCompletion,
+} from "../firebase/caseStudySetUp";
 
 function PracticePage() {
   const navigate = useNavigate();
@@ -18,6 +23,9 @@ function PracticePage() {
   const [stockData, setStockData] = useState({});
   const [selectedStock, setSelectedStock] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [studyCompleted, setStudyCompleted] = useState(false);
   const dataPath = "/data/example_data.json";
 
   useEffect(() => {
