@@ -33,11 +33,19 @@ const QuestionsPage = () => {
   const [userOrder, setUserOrder] = useState(null);
   const [isStopwatchRunning, setIsStopwatchRunning] = useState(true);
 
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const stopwatchRef = React.useRef(null);
+  const startTimeRef = React.useRef(null);
+
   const questionSetPath = {
     1: "/case_study_data/practice_data_1.json",
     2: "/case_study_data/practice_data_2.json",
     3: "/case_study_data/practice_data_3.json",
   };
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     const initialiseUser = async () => {
@@ -64,6 +72,7 @@ const QuestionsPage = () => {
               order: order,
               status: "in_progress",
               answers: {},
+              timings: {},
               createdAt: new Date().toISOString(),
             });
           } else {
@@ -131,8 +140,21 @@ const QuestionsPage = () => {
         return;
       }
 
+      const currentTime = Date.now();
+      const startTime = startTimeRef.current;
+      const timeSpentInSeconds = Math.floor((currentTime - startTime) / 1000);
+
+      const stopwatchTime = stopwatchRef.current
+        ? stopwatchRef.current
+        : timeSpentInSeconds;
+
       await updateDoc(userRef, {
         [`answers.set${currentSet}`]: answers,
+        [`timings.set${currentSet}`]: {
+          completedAt: new Date().toISOString(),
+          timeSpentInSeconds: stopwatchTime,
+          visulisationType: visulisationType,
+        },
         status: currentSet === 3 ? "completed" : "in_progress",
         lastUpdated: new Date().toISOString(),
       });
@@ -158,10 +180,16 @@ const QuestionsPage = () => {
     toast.success("Answers saved successfully!");
 
     if (currentSet < 3) {
+      startTimeRef.current = Date.now();
       navigate(`/questions/${currentSet + 1}`);
     } else {
       navigate("/");
     }
+  };
+
+  const updateStopwatchTime = (time) => {
+    setElapsedTime(time);
+    stopwatchRef.current = time;
   };
 
   const renderVisualisation = (ticker) => {
@@ -213,6 +241,7 @@ const QuestionsPage = () => {
         <StopWatch
           autoStart={true}
           onStateChange={handleStopwatchStateChange}
+          onTimeUpdate={updateStopwatchTime}
         />
       </div>
 
