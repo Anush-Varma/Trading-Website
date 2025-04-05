@@ -6,6 +6,7 @@ import SignUpPage from "./routes/SignUpPage";
 import SignInPage from "./routes/SignInPage";
 import UserStudyPage from "./routes/UserStudyPage";
 import QuestionsPage from "./routes/QuestionsPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -16,8 +17,22 @@ export const router = createBrowserRouter([
       { path: "/Tutorial", element: <Tutorial /> },
       { path: "/SignUp", element: <SignUpPage /> },
       { path: "/SignIn", element: <SignInPage /> },
-      { path: "/Practice", element: <UserStudyPage /> },
-      { path: "/Questions/:setId", element: <QuestionsPage /> },
+      {
+        path: "/Practice",
+        element: (
+          <ProtectedRoute>
+            <UserStudyPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/Questions/:setId",
+        element: (
+          <ProtectedRoute>
+            <QuestionsPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

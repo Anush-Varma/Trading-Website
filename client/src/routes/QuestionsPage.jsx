@@ -65,25 +65,24 @@ const QuestionsPage = () => {
           const userDoc = await getDoc(userRef);
 
           if (!userDoc.exists()) {
-            const order = await assignOrderToUser(uid);
-            setUserOrder(order);
+            toast.error("User profile not found. Please sign in again.");
+            navigate("/SignIn");
+            return;
+          }
 
-            await setDoc(userRef, {
-              order: order,
-              status: "in_progress",
-              answers: {},
-              timings: {},
-              createdAt: new Date().toISOString(),
-            });
-          } else {
-            const userData = userDoc.data();
-            setUserOrder(userData.order);
+          const userData = userDoc.data();
 
-            setAnswers({});
+          if (!userData.flowStarted || userData.currentStep !== currentSet) {
+            toast.error("You are not allowed to access this page.");
+            navigate("/");
+            return;
+          }
 
-            if (userData.answers && userData.answers[`set${currentSet}`]) {
-              setAnswers(userData.answers[`set${currentSet}`]);
-            }
+          setUserOrder(userData.order);
+          setAnswers({});
+
+          if (userData.answers && userData.answers[`set${currentSet}`]) {
+            setAnswers(userData.answers[`set${currentSet}`]);
           }
         } else {
           toast.error("You are not signed in. Please sign in to continue.");
@@ -130,7 +129,6 @@ const QuestionsPage = () => {
 
   const saveAnswersToFirebase = async () => {
     if (!userId) return;
-
     try {
       const userRef = doc(db, "participants", userId);
       const userDoc = await getDoc(userRef);
@@ -157,6 +155,8 @@ const QuestionsPage = () => {
         },
         status: currentSet === 3 ? "completed" : "in_progress",
         lastUpdated: new Date().toISOString(),
+        currentStep: currentSet,
+        flowStarted: true,
       });
 
       console.log("Answers saved to Firebase:", answers);
@@ -176,14 +176,34 @@ const QuestionsPage = () => {
       return;
     }
 
-    await saveAnswersToFirebase();
-    toast.success("Answers saved successfully!");
+    try {
+      await saveAnswersToFirebase();
 
-    if (currentSet < 3) {
-      startTimeRef.current = Date.now();
-      navigate(`/questions/${currentSet + 1}`);
-    } else {
-      navigate("/");
+      const nextSet = currentSet + 1;
+      const userRef = doc(db, "participants", userId);
+
+      if (currentSet < 3) {
+        await updateDoc(userRef, {
+          currentStep: nextSet,
+          lastActivity: new Date().toISOString(),
+        });
+        startTimeRef.current = Date.now();
+        navigate(`/Questions/${nextSet}`);
+      } else {
+        await updateDoc(userRef, {
+          flowStarted: false,
+          currentSet: null,
+          status: "completed",
+          lastActivity: new Date().toISOString(),
+        });
+
+        // chnage this to navigate to thankyou / survery page
+        navigate("/");
+        toast.success("Thank you for completing the study!");
+      }
+    } catch (error) {
+      console.error("Error updating user document", error);
+      toast.error("Error updating user document. Please try again.");
     }
   };
 

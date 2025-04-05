@@ -5,11 +5,12 @@ import axios from "axios";
 import TimeSeriesPlot from "../components/TimeSeriesPlot";
 import Card from "../components/Card";
 import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
-import { auth } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import CheckBox from "../components/CheckBox";
+import { checkUserCompletion } from "../firebase/caseStudySetUp";
 
 function Tutorial() {
   const navigate = useNavigate();
@@ -29,12 +30,26 @@ function Tutorial() {
     fetchStockTickers();
   }, []);
 
-  const practice = () => {
+  const practice = async () => {
     const user = auth.currentUser;
     if (user) {
-      navigate("/Practice");
+      try {
+        const hasCompleted = await checkUserCompletion(user.uid);
+        if (hasCompleted) {
+          toast.error("You have already completed the study");
+          navigate("/");
+          return;
+        } else {
+          navigate("/Practice");
+        }
+      } catch (error) {
+        console.error("Error checking user completion:", error);
+        toast.error("Error checking user completion");
+      }
     } else {
-      toast.error("Please sign in or create an account to access the practice");
+      toast.error("Please sign in to access this page.");
+      navigate("/SignIn");
+      return;
     }
   };
 

@@ -12,9 +12,13 @@ import ConnectedScatterPlot from "../components/ConnectedScatterPlot";
 import Card from "../components/Card";
 import RadioButton from "../components/RadioButton";
 import { onAuthStateChanged } from "firebase/auth";
+
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+
 import {
   initialiseStudyOrders,
   checkUserCompletion,
+  assignOrderToUser,
 } from "../firebase/caseStudySetUp";
 
 function PracticePage() {
@@ -39,6 +43,30 @@ function PracticePage() {
     fetchStockTickers();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserId(user.uid);
+
+        // Also check if they've already completed the study
+        const hasCompleted = await checkUserCompletion(user.uid);
+        setStudyCompleted(hasCompleted);
+
+        if (hasCompleted) {
+          toast.error("You have already completed the study");
+        }
+      } else {
+        // Not logged in
+        toast.error("Please sign in to participate in the study");
+        navigate("/SignIn");
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
   const ConsentForm = () => {
     const link = document.createElement("a");
     link.href = "/data/consent_form.pdf";
@@ -48,8 +76,64 @@ function PracticePage() {
     document.body.removeChild(link);
     toast.success("Consent form downloaded successfully!");
   };
-  const Continue = () => {
-    navigate("/Questions/1");
+
+  const Continue = async () => {
+    if (!isChecked) {
+      toast.error(
+        "Please read and agree to the consent form before continuing."
+      );
+      return;
+    }
+
+    if (studyCompleted) {
+      toast.error("You have already completed the study.");
+      navigate("/");
+      return;
+    }
+    if (!userId) {
+      toast.error("Please sign in to continue.");
+      navigate("/SignIn");
+      return;
+    }
+
+    try {
+      await initialiseStudyOrders();
+
+      const order = await assignOrderToUser(userId);
+
+      if (!order) {
+        toast.error("Could not assign visualization order. Please try again.");
+        return;
+      }
+
+      const userRef = doc(db, "participants", userId);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        await updateDoc(userRef, {
+          currentStep: 1,
+          flowStarted: true,
+          lastActivity: new Date().toISOString(),
+          order: order,
+        });
+      } else {
+        await setDoc(userRef, {
+          order: order,
+          currentStep: 1,
+          flowStarted: true,
+          status: "in_progress",
+          answers: {},
+          timings: {},
+          createdAt: new Date().toISOString(),
+          lastActivity: new Date().toISOString(),
+        });
+      }
+
+      navigate("/Questions/1");
+    } catch (error) {
+      console.error("Error initialising study flow:", error);
+      toast.error("Error updating user document. Please try again.");
+    }
   };
 
   const handleConsentChange = (e) => {
@@ -67,9 +151,9 @@ function PracticePage() {
           or neutral trend.
         </p>
         <p className={styles.description}>
-          You will be given 3 groups of questions. Each group will consit of 10
-          questions. Each group will be either time series, connected scatter or
-          enhanced glyphs. The order of the groups will randomised.
+          You will be given 3 sets of questions. Each set will consit of 10
+          questions. Each set will be either time series, connected scatter or
+          enhanced glyphs. The order of the set will randomised.
         </p>
         <p className={styles.description}>
           You will be assessed on your ability to identify the trends in the
