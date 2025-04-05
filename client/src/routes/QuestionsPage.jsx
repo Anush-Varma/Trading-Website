@@ -31,6 +31,7 @@ const QuestionsPage = () => {
   const [visulisationType, setVisulisationType] = useState("");
   const [userId, setUserId] = useState("");
   const [userOrder, setUserOrder] = useState(null);
+  const [isStopwatchRunning, setIsStopwatchRunning] = useState(true);
 
   const questionSetPath = {
     1: "/case_study_data/practice_data_1.json",
@@ -195,10 +196,26 @@ const QuestionsPage = () => {
     });
   };
 
+  const handleStopwatchStateChange = (isRunning) => {
+    setIsStopwatchRunning(isRunning);
+  };
+
   const isGridLayout = visulisationType === "Enhanced Glyph";
 
   return (
     <div className={styles.pageContainer}>
+      {!isStopwatchRunning && <div className={styles.blurOverlay}></div>}
+      <div
+        className={`${styles.fixedStopWatch} ${
+          !isStopwatchRunning ? styles.activeStopWatch : ""
+        }`}
+      >
+        <StopWatch
+          autoStart={true}
+          onStateChange={handleStopwatchStateChange}
+        />
+      </div>
+
       <Toaster position="bottom-left" reverseOrder={false} />
 
       <div className={styles.textContainer}>

@@ -49,3 +49,12 @@
   width: 20px;
   height: 20px;
 }
+
+.stopWatchContainer:has(.controlBtn:has(svg[data-icon="play"])) {
+  border-color: var(--component-colour3);
+}
+
+.controlBtn:has(svg[data-icon="play"]) {
+  color: var(--component-colour3);
+  transform: scale(1.1);
+}

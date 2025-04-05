@@ -3,9 +3,9 @@ import styles from "../styles/stopWatch.module.css";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 
-const StopWatch = () => {
+const StopWatch = ({ autoStart = false, onStateChange = () => {} }) => {
   const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+  const [isRunning, setIsRunning] = useState(autoStart);
 
   useEffect(() => {
     let intervalId;
@@ -20,6 +20,10 @@ const StopWatch = () => {
   const toggleRunning = () => {
     setIsRunning(!isRunning);
   };
+
+  useEffect(() => {
+    onStateChange(isRunning);
+  }, [isRunning, onStateChange]);
 
   const formatTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
