@@ -7,6 +7,7 @@ function Gylph({ id, data }) {
   const circleRadius = 70;
   const componentColour = "rgb(13, 27, 42)";
   const componentColour2 = "rgb(119, 141, 169)";
+  const componentColour3 = "rgb(224, 225, 221)";
 
   const indicatorXColour = "#ca0020";
   const indicatorYColour = "#f4a582";
@@ -80,25 +81,22 @@ function Gylph({ id, data }) {
     setIsExpanded(!isExpanded);
   };
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-      // Set initial RSI value from the latest data point
-      setRsiValue(data[data.length - 1]?.RSI || 50);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!svgRef.current || !data || data.length === 0) return;
-
-    const mainGroup = d3.select(svgRef.current).select("g").select("g");
-
+  const drawRsiElements = (mainGroup, rsiValue) => {
     mainGroup.selectAll(".rsi-arc").remove();
     mainGroup.selectAll(".rsi-text").remove();
+    mainGroup.selectAll(".rsi-label").remove();
+    mainGroup.selectAll(".rsi-marker").remove();
+    mainGroup.selectAll(".rsi-line").remove();
+
+    const start = (5 * Math.PI) / 4 + Math.PI;
+    const end = (7 * Math.PI) / 4 + Math.PI;
 
     const rsiToAngle = d3
       .scaleLinear()
       .domain([100, 0])
       .range([rsiStartAngle, rsiEndAngle]);
+
+    const rsiLineAngle = d3.scaleLinear().domain([0, 100]).range([start, end]);
 
     const endAngle = rsiValue ? rsiToAngle(rsiValue) : 0;
 
@@ -109,6 +107,7 @@ function Gylph({ id, data }) {
       .startAngle(rsiStartAngle)
       .endAngle(endAngle);
 
+    // Draw the RSI arc
     mainGroup
       .append("path")
       .attr("class", "rsi-arc")
@@ -123,6 +122,69 @@ function Gylph({ id, data }) {
       )
       .attr("stroke", componentColour2)
       .attr("stroke-width", 1);
+
+    // Draw the perpendicular lines
+    const drawPerpendicularLine = (angle, length, className) => {
+      const x1 = circleRadius * Math.cos(angle);
+      const y1 = circleRadius * Math.sin(angle);
+
+      const x2 = (circleRadius + 15 + length) * Math.cos(angle);
+      const y2 = (circleRadius + 15 + length) * Math.sin(angle);
+
+      mainGroup
+        .append("line")
+        .attr("class", className)
+        .attr("x1", x1)
+        .attr("y1", y1)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("stroke", componentColour2)
+        .attr("stroke-width", 2);
+    };
+
+    // Draw the RSI labels
+    const addRsiLabel = (angle, label, length) => {
+      const labelx = (circleRadius + 15 + length + 10) * Math.cos(angle);
+      const labely = (circleRadius + 15 + length + 10) * Math.sin(angle);
+
+      mainGroup
+        .append("text")
+        .attr("class", "rsi-text")
+        .attr("x", labelx)
+        .attr("y", labely)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", componentColour3)
+        .attr("font-size", "10px")
+        .attr("font-weight", "bold")
+        .text(label);
+    };
+
+    // Draw all four lines and labels
+    drawPerpendicularLine(rsiLineAngle(0), 10, "rsi-line-0");
+    drawPerpendicularLine(rsiLineAngle(30), 10, "rsi-line-30");
+    drawPerpendicularLine(rsiLineAngle(70), 10, "rsi-line-70");
+    drawPerpendicularLine(rsiLineAngle(100), 10, "rsi-line-100");
+
+    addRsiLabel(rsiLineAngle(100), "0", 10);
+    addRsiLabel(rsiLineAngle(70), "30", 10);
+    addRsiLabel(rsiLineAngle(30), "70", 10);
+    addRsiLabel(rsiLineAngle(0), "100", 10);
+  };
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      // Set initial RSI value from the latest data point
+      setRsiValue(data[data.length - 1]?.RSI || 50);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!svgRef.current || !data || data.length === 0) return;
+
+    const mainGroup = d3.select(svgRef.current).select("g").select("g");
+    if (!mainGroup.node()) return;
+    drawRsiElements(mainGroup, rsiValue);
   }, [rsiValue, data, circleRadius, componentColour, componentColour2]);
 
   useEffect(() => {
@@ -244,6 +306,8 @@ function Gylph({ id, data }) {
       .append("circle")
       .attr("r", circleRadius)
       .attr("fill", "rgb(119, 141, 169)");
+
+    drawRsiElements(mainGroup, rsiValue);
 
     generateGlyphConnectedGraph(mainGroup, tooltipGroup);
   }, [id, handleArcClick, indicatorSeclected, selectedTShapeButton]);

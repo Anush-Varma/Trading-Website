@@ -48,6 +48,20 @@ const QuestionsPage = () => {
   }, []);
 
   useEffect(() => {
+    window.history.pushState(null, "", window.location.pathname);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.pathname);
+      toast.error("You cannot go back to the previous page.");
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     const initialiseUser = async () => {
       const authChanges = onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -197,7 +211,7 @@ const QuestionsPage = () => {
           lastActivity: new Date().toISOString(),
         });
 
-        // chnage this to navigate to thankyou / survery page
+        // change this to navigate to thank you / survery page
         navigate("/");
         toast.success("Thank you for completing the study!");
       }
@@ -239,7 +253,6 @@ const QuestionsPage = () => {
         ...prev,
         [ticker]: value,
       };
-      // console.log("Updated answers:", newAnswers);
       return newAnswers;
     });
   };
@@ -313,14 +326,14 @@ const QuestionsPage = () => {
               </div>
             </div>
           ))}
-
-          <div className={styles.nextpage}>
-            <Button
-              onClick={handleNext}
-              text={currentSet < 3 ? "Next" : "Finish"}
-            ></Button>
-          </div>
         </div>
+      </div>
+
+      <div className={styles.nextpage}>
+        <Button
+          onClick={handleNext}
+          text={currentSet < 3 ? "Next" : "Finish"}
+        ></Button>
       </div>
     </div>
   );

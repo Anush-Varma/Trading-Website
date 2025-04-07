@@ -2,27 +2,45 @@ import Button from "./Button";
 import SearchBar from "./SearchBar";
 
 import styles from "../styles/nav.module.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 
 function Nav() {
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = getAuth();
 
+  const isQuestionsPage = location.pathname.includes("/Questions");
+
+  const handleNavigation = (action) => {
+    if (isQuestionsPage) {
+      toast.error("Please complete the case study.");
+      return;
+    }
+    action();
+  };
+
   const handleTutorialClick = () => {
-    navigate("/Tutorial");
+    handleNavigation(() => navigate("/Tutorial"));
   };
 
   const handleHomeButtonClick = () => {
-    navigate("/");
+    handleNavigation(() => navigate("/"));
   };
 
   const handleSignInButtonClick = () => {
-    navigate("/SignIn");
+    handleNavigation(() => {
+      navigate("/SignIn");
+    });
   };
 
   const handleSignOutButtonClick = () => {
+    if (isQuestionsPage) {
+      toast.error("Please complete the case study.");
+      return;
+    }
+
     if (auth.currentUser) {
       signOut(auth)
         .then(() => {
