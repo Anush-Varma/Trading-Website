@@ -18,6 +18,7 @@ import {
 } from "../firebase/caseStudySetUp";
 import { onAuthStateChanged } from "firebase/auth";
 import { use } from "react";
+import { SyncProvider } from "../context/SyncContext";
 
 const QuestionsPage = () => {
   const navigate = useNavigate();
@@ -264,78 +265,80 @@ const QuestionsPage = () => {
   const isGridLayout = visulisationType === "Enhanced Glyph";
 
   return (
-    <div className={styles.pageContainer}>
-      {!isStopwatchRunning && <div className={styles.blurOverlay}></div>}
-      <div
-        className={`${styles.fixedStopWatch} ${
-          !isStopwatchRunning ? styles.activeStopWatch : ""
-        }`}
-      >
-        <StopWatch
-          autoStart={true}
-          onStateChange={handleStopwatchStateChange}
-          onTimeUpdate={updateStopwatchTime}
-        />
-      </div>
+    <SyncProvider>
+      <div className={styles.pageContainer}>
+        {!isStopwatchRunning && <div className={styles.blurOverlay}></div>}
+        <div
+          className={`${styles.fixedStopWatch} ${
+            !isStopwatchRunning ? styles.activeStopWatch : ""
+          }`}
+        >
+          <StopWatch
+            autoStart={true}
+            onStateChange={handleStopwatchStateChange}
+            onTimeUpdate={updateStopwatchTime}
+          />
+        </div>
 
-      <Toaster position="bottom-left" reverseOrder={false} />
+        <Toaster position="bottom-left" reverseOrder={false} />
 
-      <div className={styles.textContainer}>
-        <h1 className={styles.pageTitle}>{visulisationType} Question Set</h1>
-        <p className={styles.instructions}>
-          For each stock, determine if the trend is positive, neutral, or
-          negative.
-        </p>
-      </div>
-      <div className={styles.questionsContainer}>
-        <div className={isGridLayout ? styles.gridContainer : undefined}>
-          {stockTickers.map((ticker) => (
-            <div key={ticker} className={styles.questionItem}>
-              <h1 className={styles.tickerTitle}>{ticker}</h1>
-              <div className={styles.visulisation}>
-                {renderVisualisation(ticker)}
+        <div className={styles.textContainer}>
+          <h1 className={styles.pageTitle}>{visulisationType} Question Set</h1>
+          <p className={styles.instructions}>
+            For each stock, determine if the trend is positive, neutral, or
+            negative.
+          </p>
+        </div>
+        <div className={styles.questionsContainer}>
+          <div className={isGridLayout ? styles.gridContainer : undefined}>
+            {stockTickers.map((ticker) => (
+              <div key={ticker} className={styles.questionItem}>
+                <h1 className={styles.tickerTitle}>{ticker}</h1>
+                <div className={styles.visulisation}>
+                  {renderVisualisation(ticker)}
+                </div>
+                <div className={styles.answerOptions}>
+                  <RadioButton
+                    text="Positive"
+                    name={`answer-${ticker}`}
+                    value="positive"
+                    checked={answers[ticker] === "positive"}
+                    onChange={() => {
+                      handleAnswerChange(ticker, "positive");
+                    }}
+                  />
+                  <RadioButton
+                    text="Neutral"
+                    name={`answer-${ticker}`}
+                    value="neutral"
+                    checked={answers[ticker] === "neutral"}
+                    onChange={() => {
+                      handleAnswerChange(ticker, "neutral");
+                    }}
+                  />
+                  <RadioButton
+                    text="Negative"
+                    name={`answer-${ticker}`}
+                    value="negative"
+                    checked={answers[ticker] === "negative"}
+                    onChange={() => {
+                      handleAnswerChange(ticker, "negative");
+                    }}
+                  />
+                </div>
               </div>
-              <div className={styles.answerOptions}>
-                <RadioButton
-                  text="Positive"
-                  name={`answer-${ticker}`}
-                  value="positive"
-                  checked={answers[ticker] === "positive"}
-                  onChange={() => {
-                    handleAnswerChange(ticker, "positive");
-                  }}
-                />
-                <RadioButton
-                  text="Neutral"
-                  name={`answer-${ticker}`}
-                  value="neutral"
-                  checked={answers[ticker] === "neutral"}
-                  onChange={() => {
-                    handleAnswerChange(ticker, "neutral");
-                  }}
-                />
-                <RadioButton
-                  text="Negative"
-                  name={`answer-${ticker}`}
-                  value="negative"
-                  checked={answers[ticker] === "negative"}
-                  onChange={() => {
-                    handleAnswerChange(ticker, "negative");
-                  }}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.nextpage}>
+          <Button
+            onClick={handleNext}
+            text={currentSet < 3 ? "Next" : "Finish"}
+          ></Button>
         </div>
       </div>
-
-      <div className={styles.nextpage}>
-        <Button
-          onClick={handleNext}
-          text={currentSet < 3 ? "Next" : "Finish"}
-        ></Button>
-      </div>
-    </div>
+    </SyncProvider>
   );
 };
 

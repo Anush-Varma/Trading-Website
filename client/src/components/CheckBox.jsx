@@ -25,7 +25,7 @@ function CheckBox({
     if (isChecked !== initialChecked) {
       setIsChecked(initialChecked);
     }
-  }, [initialChecked, isChecked]);
+  }, [initialChecked]);
 
   return (
     <label className={styles.checkboxContainer}>

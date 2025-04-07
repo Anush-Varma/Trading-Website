@@ -23,9 +23,16 @@ function Gylph({ id, data }) {
     parseDate: d3.timeParse("%Y-%m-%d"),
   });
 
+  const syncContext = useSync();
+
   const [rsiValue, setRsiValue] = useState(null);
 
-  const { isSynced, globalSelectedButton, updateSelectedButton } = useSync();
+  const { isSynced, globalSelectedButton, updateSelectedButton } =
+    syncContext || {
+      isSynced: false,
+      globalSelectedButton: 2,
+      updateSelectedButton: () => {},
+    };
 
   const [indicatorSeclected, setIndicatorSelected] = useState({
     xAxis: "SMA10",
