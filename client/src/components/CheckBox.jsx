@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/checkBox.module.css";
+import { useCallback } from "react";
 
-function CheckBox({ label, onChange, disabled = false }) {
-  const [isChecked, setIsChecked] = useState(false);
+function CheckBox({
+  label,
+  onChange,
+  disabled = false,
+  initialChecked = false,
+}) {
+  const [isChecked, setIsChecked] = useState(initialChecked);
 
-  const handleCheckBox = () => {
+  const handleCheckBox = useCallback(() => {
     if (!disabled) {
       const newCheckedState = !isChecked;
       setIsChecked(newCheckedState);
@@ -13,7 +19,13 @@ function CheckBox({ label, onChange, disabled = false }) {
         onChange({ target: { checked: newCheckedState } });
       }
     }
-  };
+  }, [isChecked, onChange, disabled]);
+
+  useEffect(() => {
+    if (isChecked !== initialChecked) {
+      setIsChecked(initialChecked);
+    }
+  }, [initialChecked, isChecked]);
 
   return (
     <label className={styles.checkboxContainer}>
@@ -35,4 +47,4 @@ function CheckBox({ label, onChange, disabled = false }) {
   );
 }
 
-export default CheckBox;
+export default React.memo(CheckBox);

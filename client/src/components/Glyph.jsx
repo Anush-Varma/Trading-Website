@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
 import styles from "../styles/glyph.module.css";
 import { use } from "react";
+import { useSync } from "../context/SyncContext";
 
 function Gylph({ id, data }) {
   const circleRadius = 70;
@@ -24,6 +25,8 @@ function Gylph({ id, data }) {
 
   const [rsiValue, setRsiValue] = useState(null);
 
+  const { isSynced, globalSelectedButton, updateSelectedButton } = useSync();
+
   const [indicatorSeclected, setIndicatorSelected] = useState({
     xAxis: "SMA10",
     yAxis: "SMA50",
@@ -40,42 +43,49 @@ function Gylph({ id, data }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleArcClick = useCallback((index) => {
-    switch (index) {
-      case 0:
-        setIndicatorSelected({
-          xAxis: "EMA10",
-          yAxis: "EMA50",
-        });
-        break;
-      case 1:
-        setIndicatorSelected({
-          xAxis: "SMA50",
-          yAxis: "SMA100",
-        });
-        break;
-      case 2:
-        setIndicatorSelected({
-          xAxis: "SMA10",
-          yAxis: "SMA50",
-        });
-        break;
-      case 3:
-        setIndicatorSelected({
-          xAxis: "MACD",
-          yAxis: "Signal Line",
-        });
-        break;
-      case 4:
-        setIndicatorSelected({
-          xAxis: "UBB",
-          yAxis: "LBB",
-        });
-        break;
-      default:
-        break;
-    }
-  }, []);
+  const handleArcClick = useCallback(
+    (index) => {
+      if (isSynced) {
+        updateSelectedButton(index);
+      }
+
+      switch (index) {
+        case 0:
+          setIndicatorSelected({
+            xAxis: "EMA10",
+            yAxis: "EMA50",
+          });
+          break;
+        case 1:
+          setIndicatorSelected({
+            xAxis: "SMA50",
+            yAxis: "SMA100",
+          });
+          break;
+        case 2:
+          setIndicatorSelected({
+            xAxis: "SMA10",
+            yAxis: "SMA50",
+          });
+          break;
+        case 3:
+          setIndicatorSelected({
+            xAxis: "MACD",
+            yAxis: "Signal Line",
+          });
+          break;
+        case 4:
+          setIndicatorSelected({
+            xAxis: "UBB",
+            yAxis: "LBB",
+          });
+          break;
+        default:
+          break;
+      }
+    },
+    [isSynced, updateSelectedButton]
+  );
 
   const handlePlotClick = () => {
     setIsExpanded(!isExpanded);
@@ -171,6 +181,13 @@ function Gylph({ id, data }) {
     addRsiLabel(rsiLineAngle(30), "70", 10);
     addRsiLabel(rsiLineAngle(0), "100", 10);
   };
+
+  useEffect(() => {
+    if (isSynced) {
+      setSelectedTShapeButton(globalSelectedButton);
+      handleArcClick(globalSelectedButton);
+    }
+  }, [isSynced, globalSelectedButton, handleArcClick]);
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -274,12 +291,17 @@ function Gylph({ id, data }) {
 
       tShapeButtonGroup.on("click", function () {
         setSelectedTShapeButton(i);
+
+        if (isSynced) {
+          updateSelectedButton(i);
+        }
+        handleArcClick(i);
+
         d3.select(this)
           .selectAll("rect")
           .transition()
           .duration(200)
           .attr("fill", selectedButtonColor);
-        handleArcClick(i);
       });
 
       if (selectedTShapeButton === i) {

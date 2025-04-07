@@ -11,3 +11,9 @@
   align-items: center;
   grid-template-columns: repeat(7, 1fr);
 }
+
+.syncButton {
+  display: flex;
+  padding: 1rem;
+  margin-left: 20px;
+}
