@@ -200,7 +200,6 @@ function Gylph({ id, data }) {
       .attr("height", height)
       .append("g");
 
-    // create a mainGroup layer and stack ontop each element
     const mainGroup = svg
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
@@ -235,7 +234,6 @@ function Gylph({ id, data }) {
           selectedTShapeButton === i ? pressedTransform : baseTransform
         );
 
-      // Vertical rectangle
       tShapeButtonGroup
         .append("rect")
         .attr("x", -verticalBarWidth / 2)
@@ -248,7 +246,6 @@ function Gylph({ id, data }) {
         )
         .style("cursor", "pointer");
 
-      // Horizontal rectangle
       tShapeButtonGroup
         .append("rect")
         .attr("x", -horizontalBarWidth / 2)
