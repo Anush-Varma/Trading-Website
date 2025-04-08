@@ -83,7 +83,7 @@ function Gylph({ id, data }) {
           break;
         case 4:
           setIndicatorSelected({
-            xAxis: "DEMA",
+            xAxis: "TEMA",
             yAxis: "EMA20",
           });
           break;
@@ -284,7 +284,7 @@ function Gylph({ id, data }) {
         )
         .style("cursor", "pointer");
 
-      const buttonLabels = ["EMA", "SMA 50", "SMA 10", "MACD", "UBB"];
+      const buttonLabels = ["EMA", "SMA 50", "SMA 10", "MACD", "TEMA"];
 
       tShapeButtonGroup
         .append("text")
