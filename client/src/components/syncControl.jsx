@@ -1,7 +1,7 @@
 import React from "react";
 import CheckBox from "./CheckBox";
 import { useSync } from "../context/SyncContext";
-import styles from "../styles/SyncControl.module.css";
+
 import { useCallback } from "react";
 
 function SyncControl() {
@@ -15,7 +15,7 @@ function SyncControl() {
   );
 
   return (
-    <div className={styles.syncControl}>
+    <div>
       <CheckBox
         label="Sync Technical Indicators"
         onChange={handleSyncChange}

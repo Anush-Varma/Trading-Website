@@ -1,5 +1,5 @@
 import Card from "../components/Card";
-import styles from "../styles/HomePage.module.css";
+import styles from "../styles/homePage.module.css";
 import axios from "axios";
 import { SyncProvider } from "../context/SyncContext";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
