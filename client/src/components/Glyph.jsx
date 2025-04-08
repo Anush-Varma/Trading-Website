@@ -83,8 +83,8 @@ function Gylph({ id, data }) {
           break;
         case 4:
           setIndicatorSelected({
-            xAxis: "UBB",
-            yAxis: "LBB",
+            xAxis: "DEMA",
+            yAxis: "EMA20",
           });
           break;
         default:

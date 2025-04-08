@@ -2,39 +2,79 @@ import Card from "../components/Card";
 import styles from "../styles/HomePage.module.css";
 import axios from "axios";
 import { SyncProvider } from "../context/SyncContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import SyncControl from "../components/syncControl";
-import { useMemo } from "react";
-import { useCallback } from "react";
 
 function HomePage() {
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleStocks, setVisibleStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const stocksPerPage = 50;
+  const observerRef = useRef(null);
+  const cardRefs = useRef({});
+  const containerRef = useRef(null);
 
-  const dataPath = "/data/stocks_30.json";
+  const initalBatchSize = 28;
+  const batchSize = 28;
+
+  const dataPath = "/data/stocks_200.json";
 
   useEffect(() => {
     const fetchStockTickers = async () => {
-      const response = await axios.get(dataPath);
-      const tickers = Object.keys(response.data);
-      setStockTickers(tickers);
-      setStockData(response.data);
+      setLoading(true);
+      try {
+        const response = await axios.get(dataPath);
+        const tickers = Object.keys(response.data);
+        setStockTickers(tickers);
+        setStockData(response.data);
+        setVisibleStocks(tickers.slice(0, initalBatchSize));
+      } catch (error) {
+        console.error("Error fetching stock tickers:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchStockTickers();
   }, []);
 
-  const { indexOfLastStock, indexOfFirstStock, currentStocks } = useMemo(() => {
-    const lastStock = currentPage * stocksPerPage;
-    const firstStock = lastStock - stocksPerPage;
-    return {
-      indexOfLastStock: lastStock,
-      indexOfFirstStock: firstStock,
-      currentStocks: stockTickers.slice(firstStock, lastStock),
+  useEffect(() => {
+    if (!stockTickers.length) return;
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            visibleStocks.length < stockTickers.length
+          ) {
+            const nextBatch = stockTickers.slice(
+              visibleStocks.length,
+              visibleStocks.length + batchSize
+            );
+            setVisibleStocks((prev) => [...prev, ...nextBatch]);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "100px" }
+    );
+
+    const lastCardIndex = visibleStocks.length - 1;
+    if (lastCardIndex >= 0 && cardRefs.current[lastCardIndex]) {
+      observerRef.current.observe(cardRefs.current[lastCardIndex]);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
     };
-  }, [currentPage, stocksPerPage, stockTickers]);
+  }, [stockTickers, visibleStocks]);
+
   return (
     <SyncProvider>
       <div>
@@ -42,15 +82,35 @@ function HomePage() {
           <SyncControl />
         </div>
         <div className={styles.cardsWrapper}>
-          <div className={styles.cards}>
-            {currentStocks.map((ticker, index) => (
-              <Card
-                key={ticker}
-                index={index}
-                ticker={ticker}
-                stockData={stockData[ticker]}
-              />
-            ))}
+          <div className={styles.cards} ref={containerRef}>
+            {loading ? (
+              <div className={styles.loading}>Loading stocks...</div>
+            ) : (
+              visibleStocks.map((ticker, index) => (
+                <Card
+                  key={ticker}
+                  index={index}
+                  ticker={ticker}
+                  stockData={stockData[ticker]}
+                  ref={(el) => {
+                    if (el) cardRefs.current[index] = el;
+                  }}
+                  data-index={index}
+                />
+              ))
+            )}
+            {!loading && visibleStocks.length < stockTickers.length && (
+              <div
+                className={styles.loadingMore}
+                ref={(el) => {
+                  if (el && observerRef.current) {
+                    observerRef.current.observe(el);
+                  }
+                }}
+              >
+                Loading more stocks...
+              </div>
+            )}
           </div>
         </div>
       </div>

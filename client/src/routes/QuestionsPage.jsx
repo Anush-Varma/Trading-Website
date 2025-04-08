@@ -39,9 +39,9 @@ const QuestionsPage = () => {
   const startTimeRef = React.useRef(null);
 
   const questionSetPath = {
-    1: "/case_study_data/practice_data_1.json",
-    2: "/case_study_data/practice_data_2.json",
-    3: "/case_study_data/practice_data_3.json",
+    1: "/case_study_data/case_study_test_1.json",
+    2: "/case_study_data/case_study_test_2.json",
+    3: "/case_study_data/case_study_test_3.json",
   };
 
   useEffect(() => {
