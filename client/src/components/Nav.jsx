@@ -31,6 +31,10 @@ function Nav() {
 
   const handleSignInButtonClick = () => {
     handleNavigation(() => {
+      if (auth.currentUser) {
+        toast.error("Already signed in.");
+        return;
+      }
       navigate("/SignIn");
     });
   };
