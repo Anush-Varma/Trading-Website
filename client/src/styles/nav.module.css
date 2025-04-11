@@ -6,20 +6,32 @@
   flex-wrap: wrap;
   gap: 1rem;
   max-width: 100%;
+  position: relative;
 }
 
-.left,
+.left {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1;
+  max-width: 30%;
+}
+
 .right {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   align-items: center;
+  flex: 1;
+  max-width: 30%;
+  justify-content: flex-end;
 }
 
 .centerSection {
   flex-grow: 1;
-  min-width: 200px;
-  max-width: 300px;
+  min-width: 400px;
+  max-width: 600px;
   margin: 0 1rem;
   text-align: center;
 }
@@ -47,4 +59,107 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ...existing code... */
+
+.profileContainer {
+  position: relative;
+}
+
+.profileButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+}
+
+.profileButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 120px;
+  z-index: 100;
+}
+
+.dropdownItem {
+  padding: 10px 16px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+/* ...existing code... */
+
+.logoButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--component-colour3);
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  margin-right: 16px;
+  font-size: 1.1rem;
+}
+
+.logoButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logoText {
+  font-weight: 600;
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--component-colour3);
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.buttonText {
+  font-weight: 500;
+  font-size: 18px;
+  margin-left: 8px;
 }

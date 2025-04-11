@@ -284,7 +284,7 @@ function Gylph({ id, data }) {
         )
         .style("cursor", "pointer");
 
-      const buttonLabels = ["EMA", "SMA 50", "SMA 10", "MACD", "TEMA"];
+      const buttonLabels = ["EMA", "SMA 50", "SMA 10", "MACD", "DEMA"];
 
       tShapeButtonGroup
         .append("text")

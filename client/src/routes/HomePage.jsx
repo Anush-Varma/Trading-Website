@@ -4,55 +4,36 @@ import axios from "axios";
 import { SyncProvider } from "../context/SyncContext";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import SyncControl from "../components/syncControl";
+import { useSearchParams } from "react-router-dom";
 
 function HomePage() {
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
   const [visibleStocks, setVisibleStocks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const [filteredTickers, setFilteredTickers] = useState([]);
 
   const observerRef = useRef(null);
   const cardRefs = useRef({});
   const containerRef = useRef(null);
 
-  const initalBatchSize = 28;
+  const initialBatchSize = 28;
   const batchSize = 28;
 
   const dataPath = "/data/stocks_200.json";
 
-  useEffect(() => {
-    const fetchStockTickers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(dataPath);
-        const tickers = Object.keys(response.data);
-        setStockTickers(tickers);
-        setStockData(response.data);
-        setVisibleStocks(tickers.slice(0, initalBatchSize));
-      } catch (error) {
-        console.error("Error fetching stock tickers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStockTickers();
-  }, []);
+  const searchQuery = searchParams.get("q") || "";
 
-  useEffect(() => {
-    if (!stockTickers.length) return;
-
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-
+  const setupObserver = () => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (
             entry.isIntersecting &&
-            visibleStocks.length < stockTickers.length
+            visibleStocks.length < filteredTickers.length
           ) {
-            const nextBatch = stockTickers.slice(
+            const nextBatch = filteredTickers.slice(
               visibleStocks.length,
               visibleStocks.length + batchSize
             );
@@ -63,17 +44,64 @@ function HomePage() {
       { threshold: 0.1, rootMargin: "100px" }
     );
 
+    // Observe the last card if available
     const lastCardIndex = visibleStocks.length - 1;
     if (lastCardIndex >= 0 && cardRefs.current[lastCardIndex]) {
       observerRef.current.observe(cardRefs.current[lastCardIndex]);
     }
+  };
+
+  useEffect(() => {
+    if (!stockTickers.length) return;
+
+    const filtered = searchQuery
+      ? stockTickers.filter((ticker) =>
+          ticker.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : stockTickers;
+
+    setFilteredTickers(filtered);
+
+    setVisibleStocks(filtered.slice(0, initialBatchSize));
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+  }, [stockTickers, searchQuery]);
+
+  useEffect(() => {
+    const fetchStockTickers = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(dataPath);
+        const tickers = Object.keys(response.data);
+        setStockTickers(tickers);
+        setFilteredTickers(tickers);
+        setStockData(response.data);
+      } catch (error) {
+        console.error("Error fetching stock tickers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStockTickers();
+  }, []);
+
+  useEffect(() => {
+    if (!filteredTickers.length) return;
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    setupObserver();
 
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
     };
-  }, [stockTickers, visibleStocks]);
+  }, [visibleStocks, filteredTickers]);
 
   return (
     <SyncProvider>
@@ -107,9 +135,7 @@ function HomePage() {
                     observerRef.current.observe(el);
                   }
                 }}
-              >
-                Loading more stocks...
-              </div>
+              ></div>
             )}
           </div>
         </div>
