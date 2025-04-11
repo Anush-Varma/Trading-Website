@@ -82,10 +82,12 @@ function Tutorial() {
           <div className={styles.rightText}>
             <h2>Time Series Plot</h2>
             <p>
-              Time series data is a series of data points indexed in time order.
-              Time series data is used in various fields such as finance,
-              weather forecasting, and sales forecasting. Time series data is
-              used to predict future values based on past data.
+              Time series plots, also called time series graphs, display data
+              points collected in a time sequence. They are a simple way to
+              represent time series data. The x-axis represents time and the
+              y-axis represent the variable measured. In this instance it would
+              be end of day stock prices These plots help visualise trends and
+              patterns.
             </p>
           </div>
         </div>
@@ -102,10 +104,13 @@ function Tutorial() {
             <h2>Connected Scatter Plots</h2>
             <p>
               A connected scatter plot shows the relashionship between two time
-              series data. The The x-axis represents one time series data and
-              the y-axis represents another time series data. The points are
+              series data. The x-axis represents one time series data and the
+              y-axis represents another time series data. The points are
               coloured using a colour gradient with red being the earliest and
-              green being the latest.
+              white being the latest. These plots help combine two time series
+              plots into one, for this example we take two technical indicators
+              of simple moving averages of 10 days against 50 dayss (SMA10 vs
+              SMA50)
             </p>
           </div>
         </div>
@@ -123,12 +128,13 @@ function Tutorial() {
             <h2>Enhanced Glyph Component</h2>
             <p>
               The enhanced glyph component is a custom component that allows you
-              to visualise the connected scatter plot with the ability to get
+              to visualise different connected scatter plots with the ability to
               select vaiours technical indicators. The enhanced glyph component
-              also provides an RSI indicator to help gather more insights on the
-              stock data at a certain point. In addition, the enhanced glyph
-              provides a expanding feature to better view the connected scatter
-              plot.
+              also provides an RSI indicator under the connected scatter plot to
+              help gather more insights on the stock data at a certain point. In
+              addition, the enhanced glyph provides a expanding feature to
+              better view the connected scatter plot and time series plots side
+              by side with a synchronisation feature.
             </p>
           </div>
         </div>
