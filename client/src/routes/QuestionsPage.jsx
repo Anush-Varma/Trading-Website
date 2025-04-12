@@ -213,8 +213,11 @@ const QuestionsPage = () => {
         });
 
         // change this to navigate to thank you / survery page
-        navigate("/");
         toast.success("Thank you for completing the study!");
+        setTimeout(() => {
+          window.open("https://forms.gle/t7GqUvy7G4Din1aj6", "_blank");
+          navigate("/");
+        }, 1500);
       }
     } catch (error) {
       console.error("Error updating user document", error);
