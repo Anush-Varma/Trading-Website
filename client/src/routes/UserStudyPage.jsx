@@ -151,7 +151,7 @@ function PracticePage() {
             plots, Time series, Connected scatter and Enhanced Glyphs. You will
             be tasked to identify if the plots demonstrate a positive, negative
             or neutral trend. You will be given 3 sets of questions. Each set
-            will consist of 10 questions. Each set will be either a time series,
+            will consist of 15 questions. Each set will be either a time series,
             connected scatter or enhanced glyphs. The order of the set will
             randomised. You will be assessed on your ability to identify the
             trends in the plots. Your data and all recorded information will be

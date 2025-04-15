@@ -61,7 +61,14 @@ function SignInPage() {
             </div>
             <div className={styles.signInButton}>
               <Button text="Sign In" onClick={signIn}></Button>
-              <Button text="Sign Up" type="button" onClick={signUp}></Button>
+              <Button
+                text="Sign Up"
+                type="button"
+                onClick={signUp}
+                style={{
+                  backgroundColor: "rgb(178, 77, 103)",
+                }}
+              ></Button>
             </div>
           </form>
         </div>
