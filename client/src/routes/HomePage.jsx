@@ -44,7 +44,6 @@ function HomePage() {
       { threshold: 0.1, rootMargin: "100px" }
     );
 
-    // Observe the last card if available
     const lastCardIndex = visibleStocks.length - 1;
     if (lastCardIndex >= 0 && cardRefs.current[lastCardIndex]) {
       observerRef.current.observe(cardRefs.current[lastCardIndex]);

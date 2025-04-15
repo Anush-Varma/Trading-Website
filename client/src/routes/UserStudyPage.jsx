@@ -26,12 +26,17 @@ function PracticePage() {
   const navigate = useNavigate();
   const [stockTickers, setStockTickers] = useState([]);
   const [stockData, setStockData] = useState({});
-  const [selectedStock, setSelectedStock] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [userId, setUserId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [studyCompleted, setStudyCompleted] = useState(false);
   const dataPath = "/data/example_data.json";
+
+  const tickerTrends = {
+    "Q-1": "Positive",
+    "Q-2": "Negative",
+    "Q-3": "Neutral",
+  };
 
   useEffect(() => {
     const fetchStockTickers = async () => {
@@ -39,7 +44,6 @@ function PracticePage() {
       const tickers = Object.keys(response.data);
       setStockTickers(tickers);
       setStockData(response.data);
-      setSelectedStock(tickers[0]);
     };
     fetchStockTickers();
   }, []);
@@ -50,7 +54,6 @@ function PracticePage() {
       if (user) {
         setUserId(user.uid);
 
-        // Also check if they've already completed the study
         const hasCompleted = await checkUserCompletion(user.uid);
         setStudyCompleted(hasCompleted);
 
@@ -58,7 +61,6 @@ function PracticePage() {
           toast.error("You have already completed the study");
         }
       } else {
-        // Not logged in
         toast.error("Please sign in to participate in the study");
         navigate("/SignIn");
       }
@@ -141,6 +143,98 @@ function PracticePage() {
     setIsChecked(e.target.checked);
   };
 
+  const renderExampleSet = (index) => {
+    const ticker = stockTickers[index];
+    if (!ticker || !stockData[ticker]) return null;
+
+    const trend = tickerTrends[ticker] || "Unknown";
+
+    return (
+      <div className={styles.examples}>
+        <div className={styles.exampleCard}>
+          <h2 className={styles.exampleTitle}>
+            Time Series plot - {trend} Trend Example
+          </h2>
+          <div className={styles.exampleContent}>
+            <TimeSeriesPlot data={stockData[ticker]} ticker={ticker} />
+          </div>
+          <div className={styles.radioButtonsContainer}>
+            <RadioButton
+              text="Positive"
+              name={`timeseries-trend-${index}`}
+              value="positive"
+            />
+            <RadioButton
+              text="Neutral"
+              name={`timeseries-trend-${index}`}
+              value="neutral"
+            />
+            <RadioButton
+              text="Negative"
+              name={`timeseries-trend-${index}`}
+              value="negative"
+            />
+          </div>
+        </div>
+        <div className={styles.exampleCard}>
+          <h2 className={styles.exampleTitle}>
+            Connected Scatter Plot - {trend} Trend Example
+          </h2>
+          <div className={styles.exampleContent}>
+            <ConnectedScatterPlot data={stockData[ticker]} ticker={ticker} />
+          </div>
+          <div className={styles.radioButtonsContainer}>
+            <RadioButton
+              text="Positive"
+              name={`connected-scatter-${index}`}
+              value="positive"
+            />
+            <RadioButton
+              text="Neutral"
+              name={`connected-scatter-${index}`}
+              value="neutral"
+            />
+            <RadioButton
+              text="Negative"
+              name={`connected-scatter-${index}`}
+              value="negative"
+            />
+          </div>
+        </div>
+        <div className={styles.glyphExample}>
+          <h2 className={styles.exampleTitle}>
+            Enhanced Glyph - {trend} Trend Example
+          </h2>
+          <div className={styles.exampleContent}>
+            <Card
+              className={styles.glyphCard}
+              ticker={ticker}
+              stockData={stockData[ticker]}
+              index={0}
+            />
+          </div>
+          <div className={styles.radioButtonsContainer}>
+            <RadioButton
+              text="Positive"
+              name={`glyph-trend-${index}`}
+              value="positive"
+            />
+            <RadioButton
+              text="Neutral"
+              name={`glyph-trend-${index}`}
+              value="neutral"
+            />
+            <RadioButton
+              text="Negative"
+              name={`glyph-trend-${index}`}
+              value="negative"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.container}>
       <SyncProvider>
@@ -157,108 +251,30 @@ function PracticePage() {
             trends in the plots. Your data and all recorded information will be
             kept confidential and will not be shared with any third party. You
             can find more information in the consent form below. An example of
-            the questions is given below with the timer. Please take your time
-            to familiarise yourself with the example. You are only able to
-            complete this study once.
+            the questions is given below with the timer.
           </p>
+          <p className={styles.description}>
+            Please take your time to familiarise yourself with the examples
+            provided below. As a reminder to how the conected scatter plot and
+            glyph works, you can refer back to the Tutorial page.
+          </p>
+          <p className={styles.description}>
+            You are only able to complete this study once.
+          </p>
+
           <div className={styles.stopWatchExample}>
             <StopWatch></StopWatch>
           </div>
+          {stockTickers.length >= 3 ? (
+            <>
+              {renderExampleSet(0)}
+              {renderExampleSet(1)}
+              {renderExampleSet(2)}
+            </>
+          ) : (
+            <p>Loading examples...</p>
+          )}
 
-          <div className={styles.examples}>
-            <div className={styles.exampleCard}>
-              <h2 className={styles.exampleTitle}>
-                Time Series plot example question
-              </h2>
-              <div className={styles.exampleContent}>
-                {selectedStock && stockData[selectedStock] && (
-                  <TimeSeriesPlot
-                    data={stockData[selectedStock]}
-                    ticker={selectedStock}
-                  />
-                )}
-              </div>
-              <div className={styles.radioButtonsContainer}>
-                <RadioButton
-                  text="Positive"
-                  name="timeseries-trend"
-                  value="positive"
-                />
-                <RadioButton
-                  text="Neutral"
-                  name="timeseries-trend"
-                  value="neutral"
-                />
-                <RadioButton
-                  text="Negative"
-                  name="timeseries-trend"
-                  value="negative"
-                />
-              </div>
-            </div>
-            <div className={styles.exampleCard}>
-              <h2 className={styles.exampleTitle}>
-                Connected Scatter plot example question
-              </h2>
-              <div className={styles.exampleContent}>
-                {selectedStock && stockData[selectedStock] && (
-                  <ConnectedScatterPlot
-                    data={stockData[selectedStock]}
-                    ticker={selectedStock}
-                  />
-                )}
-              </div>
-              <div className={styles.radioButtonsContainer}>
-                <RadioButton
-                  text="Positive"
-                  name="connected-scatter"
-                  value="positive"
-                />
-                <RadioButton
-                  text="Neutral"
-                  name="connected-scatter"
-                  value="neutral"
-                />
-                <RadioButton
-                  text="Negative"
-                  name="connected-scatter"
-                  value="negative"
-                />
-              </div>
-            </div>
-            <div className={styles.glyphExample}>
-              <h2 className={styles.exampleTitle}>
-                Enhanced glyph example Question
-              </h2>
-              <div className={styles.exampleContent}>
-                {selectedStock && stockData[selectedStock] && (
-                  <Card
-                    className={styles.glyphCard}
-                    ticker={selectedStock}
-                    stockData={stockData[selectedStock]}
-                    index={0}
-                  />
-                )}
-              </div>
-              <div className={styles.radioButtonsContainer}>
-                <RadioButton
-                  text="Positive"
-                  name="glyph-trend"
-                  value="positive"
-                />
-                <RadioButton
-                  text="Neutral"
-                  name="glyph-trend"
-                  value="neutral"
-                />
-                <RadioButton
-                  text="Negative"
-                  name="glyph-trend"
-                  value="negative"
-                />
-              </div>
-            </div>
-          </div>
           <div className={styles.continue}>
             <div className={styles.continueLeft}></div>
             <div className={styles.continueCenter}>
