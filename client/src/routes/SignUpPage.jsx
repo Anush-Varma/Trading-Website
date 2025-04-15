@@ -12,6 +12,7 @@ function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ function SignUpPage() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      useNavigate("/");
+      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error("Failed to create account try again");
