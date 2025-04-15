@@ -149,30 +149,17 @@ function PracticePage() {
           <p className={styles.description}>
             The following practice section will give you a series of different
             plots, Time series, Connected scatter and Enhanced Glyphs. You will
-            be tasked to identify if the plots are demonstrating a positive,
-            negative or neutral trend.
-          </p>
-          <p className={styles.description}>
-            You will be given 3 sets of questions. Each set will consit of 10
-            questions. Each set will be either time series, connected scatter or
-            enhanced glyphs. The order of the set will randomised.
-          </p>
-          <p className={styles.description}>
-            You will be assessed on your ability to identify the trends in the
-            plots.
-          </p>
-          <p className={styles.description}>
-            Your data and all recorded information will be kept confidential and
-            will not be shared with any third party. You can find more
-            information in the consent form below.
-          </p>
-
-          <p className={styles.description}>
-            An examle of the quesions is given below with the timer. Please take
-            your time to familiarise with the example.
-          </p>
-          <p className={styles.description}>
-            You are only able to complete this study once.
+            be tasked to identify if the plots demonstrate a positive, negative
+            or neutral trend. You will be given 3 sets of questions. Each set
+            will consist of 10 questions. Each set will be either a time series,
+            connected scatter or enhanced glyphs. The order of the set will
+            randomised. You will be assessed on your ability to identify the
+            trends in the plots. Your data and all recorded information will be
+            kept confidential and will not be shared with any third party. You
+            can find more information in the consent form below. An example of
+            the questions is given below with the timer. Please take your time
+            to familiarise yourself with the example. You are only able to
+            complete this study once.
           </p>
           <div className={styles.stopWatchExample}>
             <StopWatch></StopWatch>
