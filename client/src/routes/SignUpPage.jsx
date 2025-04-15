@@ -6,6 +6,7 @@ import Input from "../components/Input";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -32,6 +33,7 @@ function SignUpPage() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      useNavigate("/");
     } catch (error) {
       console.log(error);
       toast.error("Failed to create account try again");
