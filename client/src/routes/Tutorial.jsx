@@ -66,7 +66,7 @@ function Tutorial() {
           <h1>Welcome to the Tutorial</h1>
           <h2>
             This tutorial will help you understand and learn how to use the
-            enhnaced glyph component and how connected scatter plots work for
+            enhanced glyph component and how connected scatter plots work for
             time series data in stock analysis
           </h2>
         </div>
@@ -85,9 +85,9 @@ function Tutorial() {
               Time series plots, also called time series graphs, display data
               points collected in a time sequence. They are a simple way to
               represent time series data. The x-axis represents time and the
-              y-axis represent the variable measured. In this instance it would
-              be end of day stock prices These plots help visualise trends and
-              patterns.
+              y-axis represents the variable measured. In this instance, it
+              would be end-of-day stock prices These plots help visualise trends
+              and patterns.
             </p>
           </div>
         </div>
@@ -103,13 +103,13 @@ function Tutorial() {
           <div className={styles.rightText}>
             <h2>Connected Scatter Plots</h2>
             <p>
-              A connected scatter plot shows the relashionship between two time
+              A connected scatter plot shows the relationship between two-time
               series data. The x-axis represents one time series data and the
               y-axis represents another time series data. The points are
               coloured using a colour gradient with red being the earliest and
               white being the latest. These plots help combine two time series
-              plots into one, for this example we take two technical indicators
-              of simple moving averages of 10 days against 50 dayss (SMA10 vs
+              plots into one, for this example, we take two technical indicators
+              of simple moving averages of 10 days against 50 days (SMA10 vs
               SMA50)
             </p>
           </div>
@@ -129,10 +129,10 @@ function Tutorial() {
             <p>
               The enhanced glyph component is a custom component that allows you
               to visualise different connected scatter plots with the ability to
-              select vaiours technical indicators. The enhanced glyph component
+              select various technical indicators. The enhanced glyph component
               also provides an RSI indicator under the connected scatter plot to
               help gather more insights on the stock data at a certain point. In
-              addition, the enhanced glyph provides a expanding feature to
+              addition, the enhanced glyph provides an expanding feature to
               better view the connected scatter plot and time series plots side
               by side with a synchronisation feature.
             </p>
