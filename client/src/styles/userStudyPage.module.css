@@ -93,6 +93,11 @@
   padding: 10px 20px;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+}
+
 .continueLeft {
   flex: 1;
 }
