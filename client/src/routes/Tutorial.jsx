@@ -87,7 +87,10 @@ function Tutorial() {
               represent time series data. The x-axis represents time and the
               y-axis represents the variable measured. In this instance, it
               would be end-of-day stock prices These plots help visualise trends
-              and patterns.
+              and patterns. In this example the blue line represents the price
+              of stocks at a given time, the red line represents the 10 day
+              simple moving average (SMA10) and the orange line represents the
+              50 day simple moving average (SMA50).
             </p>
           </div>
         </div>
@@ -129,12 +132,17 @@ function Tutorial() {
             <p>
               The enhanced glyph component is a custom component that allows you
               to visualise different connected scatter plots with the ability to
-              select various technical indicators. The enhanced glyph component
-              also provides an RSI indicator under the connected scatter plot to
+              select various technical indicators. The technical indicators
+              included are simple moving averages of 10 and 50 days. The
+              exponential moving average (EMA) and double exponential moving
+              average (DEMA) indicators provide more sensitivity to short-term
+              changes. The enhanced glyph component also provides a relative
+              strength index (RSI) indicator under the connected scatter plot to
               help gather more insights on the stock data at a certain point. In
               addition, the enhanced glyph provides an expanding feature to
               better view the connected scatter plot and time series plots side
-              by side with a synchronisation feature.
+              by side with a synchronisation feature. This can be viewed by
+              clicking on the graph on the glyph.
             </p>
           </div>
         </div>
