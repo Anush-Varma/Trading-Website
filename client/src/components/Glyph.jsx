@@ -424,15 +424,15 @@ function Gylph({ id, data }) {
       .range([graphRadius, -graphRadius]);
 
     const customColours = [
-      "#ffffcc",
-      "#ffeda0",
-      "#fed976",
-      "#feb24c",
-      "#fd8d3c",
-      "#fc4e2a",
-      "#e31a1c",
-      "#bd0026",
       "#800026",
+      "#bd0026",
+      "#e31a1c",
+      "#fc4e2a",
+      "#fd8d3c",
+      "#feb24c",
+      "#fed976",
+      "#ffeda0",
+      "#ffffcc",
     ];
 
     const colourScale = d3
@@ -550,15 +550,15 @@ function Gylph({ id, data }) {
       .range([innerHeight + margin.top, margin.top]);
 
     const customColours = [
-      "#ffffcc",
-      "#ffeda0",
-      "#fed976",
-      "#feb24c",
-      "#fd8d3c",
-      "#fc4e2a",
-      "#e31a1c",
-      "#bd0026",
       "#800026",
+      "#bd0026",
+      "#e31a1c",
+      "#fc4e2a",
+      "#fd8d3c",
+      "#feb24c",
+      "#fed976",
+      "#ffeda0",
+      "#ffffcc",
     ];
 
     const colourScale = d3

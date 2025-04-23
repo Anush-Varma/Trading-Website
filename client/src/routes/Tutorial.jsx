@@ -109,8 +109,8 @@ function Tutorial() {
               A connected scatter plot shows the relationship between two-time
               series data. The x-axis represents one time series data and the
               y-axis represents another time series data. The points are
-              coloured using a colour gradient with red being the earliest and
-              white being the latest. These plots help combine two time series
+              coloured using a colour gradient with white being the earliest and
+              red being the oldest. These plots help combine two time series
               plots into one, for this example, we take two technical indicators
               of simple moving averages of 10 days against 50 days (SMA10 vs
               SMA50)
